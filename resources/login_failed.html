@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>Tiira</title>
+
+	<link rel="apple-touch-icon" href="https://www.tiira.fi/images/apple-touch-icon.png" />
+	<link rel="apple-touch-icon" href="https://www.tiira.fi/images/apple-touch-icon-152x152.png" />
+	<link rel="apple-touch-icon" href="https://www.tiira.fi/images/apple-touch-icon-167x167.png" />
+	<link rel="apple-touch-icon" href="https://www.tiira.fi/images/apple-touch-icon-180x180.png" />
+	<link rel="apple-touch-icon-precomposed" href="https://www.tiira.fi/images/apple-touch-icon-300x300.png" />
+	<link rel="icon" href="https://www.tiira.fi/images/icon-hires.png" />
+	<link rel="icon" href="https://www.tiira.fi/images/icon-normal.png" />
+	<link rel="shortcut icon" href="https://www.tiira.fi/favicon.ico" />
+
+	<link rel="stylesheet" type="text/css" href="screen-basic.css"/>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<meta http-equiv="Content-Script-Type" content="text/javascript"/>
+	<meta http-equiv="Content-Style-Type" content="text/css"/>
+
+</head>
+
+<body onload="focus_tunnus()">
+<script
+		language="JavaScript" type="text/javascript" src="/tallenteet/javascr_tallenne.js">
+</script>
+<script
+		language="JavaScript" type="text/javascript" src="/ajax/ajax_funktiot.js">
+</script>
+<script language="JavaScript" type="text/javascript" src="javascr.js"></script>
+<script type="text/javascript">
+<!--
+function yhteystiedot(ilmoitus) {
+        var answer = confirm(ilmoitus);
+        if (answer){
+                window.location = "index.php?toiminto=4";
+        }	
+}
+
+function focus_tunnus() { /* 20100512 AJL */
+   document.login.tunnus.focus()
+}
+-->
+</script>
+<div id="header">
+	<a target="_blank" href="http://www.birdlife.fi" title="BirdLife Suomi etusivu"><img src="header.jpg" border="0" alt="etusivu"/></a>
+</div>
+<div id="user">
+	<ul>
+		<li id="user-info">
+			<form method="post" action="index.php?toiminto" name="login">
+				<input type="hidden" name="kirjaudutaan" value="2" />
+				Tunnus:<input type="text" name="tunnus" class="textfield" title="tunnus"/>&nbsp;
+				Salasana<input type="password" name="salasana" class="textfield" title="salasana"/>&nbsp;<input type="submit" name="login" value="KIRJAUDU" class="loginbutton"/>
+			</form>
+		</li>
+		<li id="user-logout"><a href="index.php?toiminto=2">Rekisteröidy</a></li>
+		<li id="user-time">1.5.2022 11:00:18</li>
+	</ul>
+</div>
+<div id="main"><div id="content">    <p class="etusivun_sloganin_esittely">
+	Tiira on kaikille avoin lintutietopalvelu. Tiirassa voi pitää omaa lintuhavaintopäiväkirjaa ja selata lintuhavaintoja. Havainnot ovat tärkeitä lintuyhdistysten suojelu- ja tutkimustyölle. Osallistu kirjaamalla omat havaintosi.    </p>
+	<div style="float:left" class="etusivun_tilasto">
+		Järjestelmässä on 24749867 havaintoilmoitusta.<br/>
+		Järjestelmään on tänään ilmoitettu 1396 havaintoa.<br/>
+		Suomen 25 uusinta mielenkiintoista havaintoa:    </div>
+
+	<!-- UUTISOSIO ALKAA -->
+	<div style="float:left;clear:right" class="etusivun_tilasto">
+		<a href="index.php?toiminto=28&amp;uutinen=811">Atlaksella tietoa pesinnän ajoittumisesta (6.4.2022)</a><br/><a href="index.php?toiminto=28&amp;uutinen=808">Tiiran maaliskuun kuva valittu (1.4.2022)</a><br/><a href="index.php?toiminto=28&amp;uutinen=807">Huolehditaan yhdessä Tiiran aineiston laadusta (22.3.2022)</a><br/><a href="index.php?toiminto=28&amp;uutinen=0">...</a>
+	</div>
+	<!-- UUTISOSIO LOPPUU -->
+
+	<!-- HAVAINTOILISTAUS ALKAA -->
+	<div style="float:left;clear:left" class="havaintolistaus">
+		<br/><table><tr><td valign="top">
+		<table><tr class='tumma'><td>Tunturikiuru</td><td>1.5.</td><td>Juva Kuhalampi 1 (Markku Seilonen)</td></tr>
+			<tr class='vaalea'><td>Tiibetinhanhi</td><td>1.5.</td><td>Tornio Pirkkiö, Isoniitty 2 (Tommi Lankila)</td></tr>
+			<tr class='tumma'><td>Harmaahaikara</td><td>1.5.</td><td>Kotka Rantahaka, lintutorni 51 (Teemu Tast)</td></tr>
+			<tr class='vaalea'><td>Silkkiuikku</td><td>30.4.</td><td>Hollola Kutajärvi, Sarvikuutti 260 (Esa Lammi)</td></tr>
+			<tr class='tumma'><td>Punapäänarsku</td><td>29.-30.4.</td><td>Uusikaupunki Ahmasvesi 1 (Esa Helander, Jorma He...)</td></tr>
+			<tr class='vaalea'><td>Merimetso</td><td>30.4.</td><td>Pori Enäjärvi, lava 1500 (Petteri Mäkelä, Matti ...)</td></tr>
+			<tr class='tumma'><td>Tukkasotka</td><td>30.4.</td><td>Pori Enäjärvi, lava 900 (Petteri Mäkelä, Matti ...)</td></tr>
+			<tr class='vaalea'><td>Mustalintu</td><td>30.4.</td><td>Hanko Hangon Lintuasema, Halias 2162 (Aki Aintila, Taavetti ...)</td></tr>
+			<tr class='tumma'><td>Haahka</td><td>30.4.</td><td>Hanko Hangon Lintuasema, Halias 7321 (Aki Aintila, Taavetti ...)</td></tr>
+			<tr class='vaalea'><td>Tunturikiuru</td><td>30.4.</td><td>Joensuu Eno, Sarvinki, Otontupa 6 (Ilkka Kuronen)</td></tr>
+			<tr class='tumma'><td>Muuttohaukka</td><td>30.4.</td><td>Lappeenranta Joutseno, Konnunsuo, lintu... 3 (Eero Poikonen)</td></tr>
+			<tr class='vaalea'><td>Tunturikiuru</td><td>30.4.</td><td>Joensuu Eno, Sarvinki 3 (Heikki Pönkkä)</td></tr>
+			<tr class='tumma'><td>Mustahaikara</td><td>30.4.</td><td>Parikkala Siikalahti, patotie 1 (Hanna Aalto, Janne Aal...)</td></tr>
+			<tr class='vaalea'><td>Arosuohaukka</td><td>30.4.</td><td>Muhos Matokorpi, Lintutorni 1 (Jorma Siira, Johanna S...)</td></tr>
+			<tr class='tumma'><td>Punakaulahanhi</td><td>30.4.</td><td>Lapinjärvi Porlammi 2 (Kai Ruokojärvi)</td></tr>
+			<tr class='vaalea'><td>Pikkutiira</td><td>30.4.</td><td>Parainen Korppoo, Jurmo 1 (Enna  Tikka)</td></tr>
+			<tr class='tumma'><td>Valkoposkihanhi</td><td>30.4.</td><td>Tuusula Rantamo, kukkula 900 (Seppo Niiranen, Sandra...)</td></tr>
+			<tr class='vaalea'><td>Mustakurkku-uikku</td><td>30.4.</td><td>Espoo Matalajärvi, lintutorni 22 (Mikko Karkia, Timo Hel...)</td></tr>
+			<tr class='tumma'><td>Pikkutiira</td><td>30.4.</td><td>Raisio Raisionlahti, lintutorni 1 (Nina Arvola, Timo Elov...)</td></tr>
+			<tr class='vaalea'><td>Merisirri</td><td>30.4.</td><td>Kirkkonummi Berggrund 7 (Asko Rokala, Staffan B...)</td></tr>
+			<tr class='tumma'><td>Sepelhanhi</td><td>30.4.</td><td>Vihti Vanjärvi, Kaunela 1 (Mika Teivonen)</td></tr>
+			<tr class='vaalea'><td>Virtavästäräkki</td><td>30.4.</td><td>Karkkila Massakoski, pato 2 (Mika Teivonen)</td></tr>
+			<tr class='tumma'><td>Arosuohaukka</td><td>30.4.</td><td>Hämeenlinna Kalvola, Heinu 1 (Samuli Helminen)</td></tr>
+			<tr class='vaalea'><td>Laulurastas</td><td>30.4.</td><td>Parainen Korppoo, Jurmon lintuasema 176 (Tatu Hokkanen, Julius ...)</td></tr>
+			<tr class='tumma'><td>Merisirri</td><td>30.4.</td><td>Kökar Hamnö fågelplattform 30 (Heikki Vasamies)</td></tr>
+		</table>    </td>
+		<td>
+			<table>
+				<tr>
+					<td>
+						Uusin kuva:				</td>
+				</tr>
+				<tr>
+					<td>
+						<img alt="." src="etusivu_kuva.jpg" title="Mustapyrstökuiri 1.5.2022 Pekka Leinonen" />
+						<hr/>
+					</td>
+				</tr>
+			</table>
+			<!-- MAINOSBANNERIT ALKAA-->
+			<table>
+				<tr>
+					<td>
+						<a target="blank" href="http://www.lintuvaruste.fi"><img border="0" vspace="1" src="https://www.tiira.fi/images/mainokset/lvalogo2014_banneri.jpg" alt="Lintuvaruste"/></a>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a target="blank" href="http://www.fotofennica.fi"><img border="0" vspace="1" src="https://www.tiira.fi/images/mainokset/ff_banner_120x60px.gif" alt="Fotofennica"/></a>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a target="blank" href="http://swarovs.ki/KnkD"><img border="0" vspace="1" src="https://www.tiira.fi/images/mainokset/SO_Logo_120x60_RGB.jpg" alt="Swarovski NL Pure"/></a>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a target="blank" href="http://www.remes.fi/lintuharrastus"><img border="0" vspace="1" src="https://www.tiira.fi/images/mainokset/remes-meopta.gif" alt="Remes"/></a>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a target="blank" href="http://finnature.fi/fi/blogi/finnature-etsii-uusia-lintuoppaita"><img border="0" vspace="1" src="https://www.tiira.fi/images/mainokset/Tiira_Finnaturelle lintuoppaaksi.png" alt="Finnature"/></a>
+					</td>
+				</tr>
+			</table>
+			<!-- MAINOSBANNERIT LOPPUU -->
+		</td>
+	</tr></table>
+	</div>
+
+	<!-- SOPPARIT, RAHOITTAJAT, LATAUSAIKA ALKAA -->
+	<div style="clear:left"> <!-- lopputauhkat -->
+		<table><tr><td>
+			<a target="_blank" href="kieli/fi/TIIRA_kayttoehdot_unreg.pdf"><small>Käyttöehdot (rekisteröitymätön käyttäjä)</small></a>
+			<br/><a target="_blank" href="kieli/fi/Tiiran_rekisteri_ja_tietosuojaseloste.pdf"><small>Rekisteri- ja tietosuojaseloste</small></a>
+		</td>
+			<!--
+    <td>
+    <a class="logot" title="Rahoittajat" href="http://www.nessling.fi" target="_blank">
+    <img src="nessling.png" border="0" alt="Nessling"/></a>
+    </td><td>
+    <a class="logot" title="Rahoittajat" href="http://www.birdlife.fi" target="_blank">
+    <img src="birdlife_logo2.png" border="0" alt="BirdLife"/></a>
+    </td><td>
+    <a class="logot" title="Rahoittajat" href="http://www.utu.fi" target="_blank">
+    <img src="siipisoihtu3.png" border="0" alt="Turun yliopisto"/></a></td>
+    -->
+		</tr>
+		</table>
+		<br/>
+		<table style="font-size:75%;line-height:0.8;">
+			<tr>
+				<td width="350px" align="left">
+				</td>
+				<td width="180px" align="left">
+				</td>
+				<td width="150px" align="right">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Lataus kesti 0.0367 s				</td>
+				<td>
+				</td>
+				<td align="right">
+				</td>
+			</tr>
+		</table>
+	</div>
+</div><div id="navi">	<script language="JavaScript" type="text/javascript" src="ajax/ajax_funktiot.js"></script>
+	<script type="text/javascript">
+		function kielenvalinta(kieli) {
+			KasitteleSessiot('ajax/talletasessioon.php','alkukieli='+kieli+'&amp;kieli='+kieli,TarkistaVirhe,false);
+			window.location = "index.php";
+		}
+	</script>
+	<div id="nav">
+		<h2>Navigointi</h2>
+		<a name="navi-a"></a>
+		<div id="normal">
+			<ul>
+				<li><a href="index.php" id="etusivu">Etusivu</a></li>
+				<li class="otsikko"><b>Havaintoselain</b>
+					<ul>
+						<li><a href="index.php?toiminto=8" id="hakukriteerit">Anna hakukriteerit</a></li>
+						<li><a href="index.php?toiminto=19" id="admin_haut">Valtakunnan haut</a></li>
+						<li class="noborder"><a href="index.php?toiminto=48" id="havaintosivut">Havaintosivut</a></li>
+						<!--
+						<li class="noborder"><a href="index.php?toiminto=32" id="admin_haut">Teemahaut</a></li>
+						-->
+					</ul>
+				</li>
+				<li><a href="index.php?toiminto=10" id="havaintolomake">Ilmoita havainto</a></li>
+				<li class="otsikko"><b>Lajitietoa</b>
+					<ul>
+						<li><a href="index.php?toiminto=7" id="etsitaksoni">Etsi laji</a></li>
+						<!-- <li><a href="index.php?toiminto=3" id="lajinaytto">Selaa lajeja</a></li> -->
+						<li><a href="index.php?toiminto=63" id="rk_ark_lajit">ARK-RK -lajit</a></li>
+						<li class="noborder"><a target="_blank" href="/rapot/taksonit.html" id="taksonilinkki">Taksoninimikkeet</a></li> <!-- 20120207 AJL -->
+					</ul>
+				</li>
+				<li><a href="index.php?toiminto=5" id="salasana">Unohtunut salasana</a></li>
+				<li><a target="_blank" href="https://tiedostot.birdlife.fi/ohjeet/tiira_ohje_fi.pdf" id="ohjeet">Ohjeet</a></li>
+				<!-- 20091222 AJL <li><a target="_blank" href="Tiira-bruksanvisning.html" id="svenska">< ?=$menu['bruksanvisning']? ></a></li> -->
+				<li><a href="https://www.tiirafoorumi.info/keskustelu/phpBB3/index.php" target="_blank" id="foorumi">Foorumi</a></li>
+				<!-- 20131218 AJL
+				<li><a href="https://www.birdlife.fi/tiira-blogi/" target="_blank" id="tiirablogi">Tiira-blogi</a></li>
+				20161101 AJL -->
+			</ul>
+		</div>
+		<div id="footer">
+			<p>
+				&copy; <a href="https://www.birdlife.fi" target="_blank">BirdLife Suomi ry</a>
+			</p>
+			<p>
+				Ongelmia sisäänkirjautumisessa? Lähetä postia:<br/>tiira(ät)birdlife.fi
+			</p>
+			<p>
+				<a href="javascript:kielenvalinta('se')" style="text-decoration:none">På svenska</a>
+			</p>
+		</div>
+	</div>
+</div></div>    <script>
+    alert('Kirjautuminen epäonnistui! Tarkista tunnus ja salasana.');
+    </script>
+</body>
+</html>

@@ -1,0 +1,968 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <title>Tiira</title>
+
+    <link rel="apple-touch-icon" href="https://www.tiira.fi/images/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" href="https://www.tiira.fi/images/apple-touch-icon-152x152.png" />
+    <link rel="apple-touch-icon" href="https://www.tiira.fi/images/apple-touch-icon-167x167.png" />
+    <link rel="apple-touch-icon" href="https://www.tiira.fi/images/apple-touch-icon-180x180.png" />
+    <link rel="apple-touch-icon-precomposed" href="https://www.tiira.fi/images/apple-touch-icon-300x300.png" />
+    <link rel="icon" href="https://www.tiira.fi/images/icon-hires.png" />
+    <link rel="icon" href="https://www.tiira.fi/images/icon-normal.png" />
+    <link rel="shortcut icon" href="https://www.tiira.fi/favicon.ico" />
+
+    <link rel="stylesheet" type="text/css" href="screen-basic.css"/>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <meta http-equiv="Content-Script-Type" content="text/javascript"/>
+    <meta http-equiv="Content-Style-Type" content="text/css"/>
+
+</head>
+
+<body>
+<script
+        language="JavaScript" type="text/javascript" src="/tallenteet/javascr_tallenne.js">
+</script>
+<script
+        language="JavaScript" type="text/javascript" src="/ajax/ajax_funktiot.js">
+</script>
+<script language="JavaScript" type="text/javascript" src="javascr.js"></script>
+<script type="text/javascript">
+<!--
+function yhteystiedot(ilmoitus) {
+        var answer = confirm(ilmoitus);
+        if (answer){
+                window.location = "index.php?toiminto=4";
+        }
+}
+
+function focus_tunnus() { /* 20100512 AJL */
+   document.login.tunnus.focus()
+}
+-->
+</script>
+<div id="header">
+    <a target="_blank" href="http://www.birdlife.fi" title="BirdLife Suomi etusivu"><img src="header.jpg" border="0" alt="etusivu"/></a>
+</div>
+<div id="user">
+    <div id="user-logged">
+        <p><strong>Timo Fager</strong></p>
+        <ul>
+            <li id="user-info"><a href="index.php?toiminto=4">Omat tiedot</a></li>
+            <li id="user-logout"><a href="index.php?logout=1" accesskey="q">Kirjaudu ulos</a></li>
+            <li id="user-time">3.5.2022 22:03:02</li>
+        </ul>
+    </div>
+</div>
+<div id="main"><div id="content"><script language="JavaScript" type="text/javascript" src="ajax/ajax_funktiot.js">
+</script>
+    <script type="text/javascript">
+<!--
+function rekurs_rari() { /* laittaa rastin myös suomi-kohtaan kun alue rastitetaan */
+	document.getElementById("firari").checked='checked'
+}
+function rekurs_aika() {
+	document.getElementById("fiaika").checked='checked'
+}
+function rekurs_maara() {
+	document.getElementById("fimaara").checked='checked'
+}
+function maara_poisto() {
+	if (document.getElementById("fimaara").checked==false) {
+		document.getElementById("almaara").checked=false
+	}
+}
+function aika_poisto() {
+	if (document.getElementById("fiaika").checked==false) {
+		document.getElementById("alaika").checked=false
+	}
+}
+
+function rari_poisto() { /*kun rastittaa suomi-kohdan pois niin ottaa rastin pois alueesta ja piilottaa alueen. Jos klikkaa fi-rari päälle niin al-rari näytetään tyhjänä*/
+	if (document.getElementById("firari").checked==false) {
+		document.getElementById("alrari").checked=false;
+	}
+}
+
+/*  PIILOTTAA KERUTOIMRADIO*/
+function kerutoimpiilo() {
+	v=document.getElementById("aluevalikko").value;
+        if (v==2 || v==3 || v==4 || v==10 || v==11 || v==13) { // näytetään kerutoim TLY, Tringa, Porvoo, PiLY, PLY, MLY
+	        document.getElementById("kerutoim1").style.display='block'
+                document.getElementById("kerutoim2").style.display='block'
+        } else { // piilotetaan
+                document.getElementById("kerutoim1").style.display='none'
+                document.getElementById("kerutoim2").style.display='none'
+		document.paaformi_name.kerutoim[0].checked=true;	// laitetaan alue keruuksi aina kun kyseessä alue jolla ei toimialuetta
+        }
+}
+/* document.paaformi_name.kerutoim[1].value="1"; tämä vaihtaa keruuksi */
+
+function ohje(otsikko,teksti) {
+	if (teksti == '') {
+		otsikko = 'Ohje';
+		teksti = 'Anna hakukriteerit ja paina \'Hae\'';
+	}
+	ohjeteksti = '<i>'+otsikko+'</i><br/><br/>'+teksti;
+	document.getElementById("help").innerHTML=ohjeteksti;
+	return;
+}
+
+function focus_laji() {
+      	document.getElementById("paaformi").laji.focus();
+}
+
+function dis_ena_negahaku(arvo) {
+	/**	20131206 AJL Jos lajikentässä on jotakin, näytetään negahakun kruxi-kenttä
+	*	20160116 AJL Jos ollaan peruslomakkeella, negahaku-kentää ei ole, ohitetaan.
+	*/
+	var piilo = '';
+
+	if (typeof arvo.value == 'undefined' || arvo == null) {
+		piilo = '';
+	} else {
+		piilo = arvo.value;
+	}
+
+	// 20160127 AJL
+	var loytyyko = document.getElementById("negahakubox");
+	if (loytyyko == null) {
+		; // ei ollut, ohitetaan
+	} else {
+		if (piilo=='') {
+			document.getElementById("negahakubox").style.display = "none";
+		} else {
+			/* document.getElementById("negahakubox").style.display = "block"; */
+			document.getElementById("negahakubox").style.display = "";
+		}
+	}
+}
+
+-->
+</script>
+
+
+    <div id="isokehys">
+        <form method = "get" id="paaformi" name="paaformi_name" action = "/index.php"> <!-- uusi lisäys -->
+            <input type="hidden" name="toiminto" value= "29" /> <!-- kertoo minne mennään hae-painamisen jälkeen  -->
+            <table> <!-- iso table alkaa -->
+                <tbody><tr>
+                    <td class="kehys" valign="top">
+                        <table>  <!-- vasen ylätable alkaa-->
+                            <tbody> <!-- vasen ylätablew -->
+                            <tr><td>
+    <span class="submitbutton2">
+    <input title="Valitse tästä laji tai monta lajia pilkulla erotettuna" type = "button" name= "hae_laji" value="Laji" onclick="window.open('taksonomia/etsitaksoniikkuna.php','lajit', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,copyhistory=yes,width=700,height=600');" onmouseover="javascript:ohje('Valitse laji','Valitse tästä laji tai monta lajia pilkulla erotettuna')"/>
+    </span>
+
+                            </td><td colspan="2"> <!-- vasen ylätablef -->
+                                <input type = "text" name = "laji" id="laji" style="width:340px" value = "" onkeyup="dis_ena_negahaku(this)" onblur="dis_ena_negahaku(this)" onfocus="javascript:ohje('Anna laji tai lajeja','Voit antaa lajinimet joko suomeksi, ruotsiksi, tieteellisillä nimillä tai tieteellisillä lyhenteillä. Jos annat useita lajeja, niin erota ne pilkulla. Viereisestä Laji-painikkeesta pääset valitsemaan lajeja.')"/>
+                            </td></tr> <!-- vasen ylätable7 -->
+                            <tr><td onmouseover="javascript:ohje('Alue','Valitse paikallisyhdistys jonka alueen havaintoja haluat tarkastella.')">Alue</td>
+                                <td colspan="2">
+                                    <select id="aluevalikko" name="alue" style="width:344px" onblur="kerutoimpiilo()" onclick="kerutoimpiilo()" onfocus="javascript:ohje('Alue','Valitse paikallisyhdistys jonka alueen havaintoja haluat tarkastella.')">
+                                        <option value="0">Koko Suomi</option>
+                                        <option value="19">BirdLife Keski-Pohjanmaa ry</option>
+                                        <option value="6">Etelä-Karjalan lintutieteellinen yhdistys ry</option>
+                                        <option value="16">Etelä-Savon Lintuharrastajat Oriolus ry</option>
+                                        <option value="3" selected="selected">Helsingin Seudun Lintutieteellinen Yhdistys Tringa ry</option>
+                                        <option value="21">Kainuun Lintutieteellinen Yhdistys ry</option>
+                                        <option value="8">Kanta-Hämeen Lintutieteellinen Yhdistys ry</option>
+                                        <option value="22">Kemi-Tornion Lintuharrastajat Xenus ry</option>
+                                        <option value="24">Keski- ja Pohjois-Uudenmaan Lintuharrastajat Apus ry</option>
+                                        <option value="15">Keski-Suomen Lintutieteellinen Yhdistys ry</option>
+                                        <option value="29">Kuusamon Lintukerho ry</option>
+                                        <option value="5">Kymenlaakson Lintutieteellinen Yhdistys ry</option>
+                                        <option value="23">Lapin Lintutieteellinen Yhdistys ry </option>
+                                        <option value="26">Lohjan lintutieteellinen yhdistys Hakki ry</option>
+                                        <option value="9">Lounais-Hämeen Lintuharrastajat ry</option>
+                                        <option value="13">Merenkurkun Lintutieteellinen Yhdistys ry</option>
+                                        <option value="10">Pirkanmaan Lintutieteellinen Yhdistys ry</option>
+                                        <option value="18">Pohjois-Karjalan Lintutieteellinen Yhdistys ry</option>
+                                        <option value="20">Pohjois-Pohjanmaan Lintutieteellinen Yhdistys ry</option>
+                                        <option value="17">Pohjois-Savo - Lintuyhdistys Kuikka</option>
+                                        <option value="11">Porin Lintutieteellinen Yhdistys ry</option>
+                                        <option value="4">Porvoon Seudun Lintuyhdistys ry</option>
+                                        <option value="7">Päijät-Hämeen Lintutieteellinen Yhdistys ry</option>
+                                        <option value="27">Rauman Seudun Lintuharrastajat ry</option>
+                                        <option value="14">Suomenselän Lintutieteellinen Yhdistys ry</option>
+                                        <option value="12">Suupohjan Lintutieteellinen Yhdistys ry</option>
+                                        <option value="2">Turun Lintutieteellinen Yhdistys ry</option>
+                                        <option value="1">Ålands Fågelskyddsförening rf</option>
+                                    </select>
+                                </td></tr> <!-- vasen ylätable rivinvaihto -->
+                            <tr>
+                                <td><label for="kuntasolu" onmouseover="javascript:ohje('Kunta','Valitse kunta, jonka havaintoja haluat tarkastella. Voit valita kerralla useammankin kunnan. Anna tällöin kunnat muodossa Kaarina, Espoo, Inkoo.')"> Kunta&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></td>
+                                <td><input type = "text" id="kuntasolu" name = "kunta" size="22" value = "" onfocus="javascript:ohje('Kunta','Valitse kunta, jonka havaintoja haluat tarkastella. Voit valita kerralla useammankin kunnan. Anna tällöin kunnat muodossa Kaarina, Espoo, Inkoo.')"/></td>
+                                <td id="kerutoim1">
+                                    <input id="ker" type="radio" name="kerutoim" value="1" onfocus="javascript:ohje('Keruualue','Hae yhdistyksen havaintojenkeruualueen havaintoja')" checked="checked" />
+                                    <label for="ker">Keruualue</label></td></tr>
+                            <tr>
+                                <td colspan="2">
+                                    <!--
+                                    <label for="paikkasolu" onmouseover="javascript:ohje('Paikka','Anna paikka (vapaa tekstihaku). Paikannimellä voi hakea vain kun kunta tai alue on valittu.')">Paikka&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                                    </td><td>
+                                    <input type = "text" id="paikkasolu" name = "paikka" size="12" value = "" onfocus="javascript:ohje('Paikka','Anna paikka (vapaa tekstihaku). Paikannimellä voi hakea vain kun kunta tai alue on valittu.')"/>
+                                    -->
+                                </td>
+                                <td id="kerutoim2">
+                                    <input id="toi" type="radio" name="kerutoim" value="2" onfocus="javascript:ohje('Toimialue','Hae yhdistyksen toimialueen havaintoja. ')"  />
+                                    <label for="toi">Toimialue <small>(hitaampi haku)</small></label></td></tr>
+                            <!--  KOORDINAATTIRAJAUS ALKAA -->
+                            <tr>
+                                <td><i>Alue 1</i></td>
+                                <td colspan="2">Vasen alakulma: N 6685706, E 390439</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="2">Oikea yläkulma: N 6688763, E 394698</td>
+                            </tr>
+                            <tr>
+                                <td><i>Alue 2</i></td>
+                                <td colspan="2">Vasen alakulma: N 6670105, E 388479</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="2">Oikea yläkulma: N 6673264, E 394552</td>
+                            </tr>
+                            <tr><td colspan="3"><span class="submitbutton2">
+	<button type="button"
+            onclick="javascript:koord_rajaus()"
+            onmouseover="javascript:ohje('Koordinaattirajaus','Rajaa alue kartalla.')">Rajaa kartalla</button>
+	</span>
+                                &nbsp;<span class="submitbutton2">
+	    <button type="button" onclick="javascript:poistakoordinaatit()">Poista koordinaatit</button>
+	    </span>
+                                <!-- Piilotetaan keruutoimiradio jos Suomi alueena-->
+                                <script type="text/javascript">kerutoimpiilo();</script>
+                            </td></tr>
+                            </tbody></table> <!-- vasen ylä-table loppuu-->
+                    </td>	<!-- ison table eka sarake loppuu -->
+
+                    <!-- sorttausjärjestys alkaa -->
+                    <td class="kehys" valign="top"> <!-- ison tablen toka sarake alkaa -->
+                        <table> <!-- oikea ylätable alkaa-->
+                            <tbody><tr><td>
+                                Lajittelu</td><td>Suunta</td></tr>
+                            <tr><td>
+                                <select name = "order1" onfocus="javascript:ohje('Lajittelukriteerit','Anna ensisijainen lajittelukriteeri.')">
+                                    <option value="havainto_id">Ilmoitusaika</option>
+                                    <option value="syst_ord">Systemaattinen</option>
+                                    <option value="lukum">Lukumäärä</option>
+                                    <option value="pvm1" selected="selected">Päivämäärä</option>
+                                    <option value="kunta_fi">Kunta</option>
+                                    <option value="kk, pv">Kuukausi ja päivä</option>
+                                </select>
+                            </td><td>
+                                <select name="suunta1" onfocus="javascript:ohje('Lajittelusuunta','Anna ensisijaisen lajittelukriteerin suunta.')">
+                                    <option value="desc" selected="selected">alas</option>
+                                    <option value="asc">ylös</option>
+                                </select>
+                            </td></tr><tr><td>
+                                <!-- TOINEN KRITEERI -->
+                                <select name = "order2" onfocus="javascript:ohje('Lajittelukriteerit','Anna toissijainen lajittelukriteeri')">
+                                    <option value="havainto_id">Ilmoitusaika</option>
+                                    <option value="syst_ord" selected="selected">Systemaattinen</option>
+                                    <option value="lukum">Lukumäärä</option>
+                                    <option value="pvm1">Päivämäärä</option>
+                                    <option value="kunta_fi">Kunta</option>
+                                    <option value="kk, pv">Kuukausi ja päivä</option>
+                                </select>
+                            </td><td>
+                                <select name="suunta2" onfocus="javascript:ohje('Lajittelusuunta','Anna toissijaisen lajittelukriteerin suunta.')">
+                                    <option value="desc" >alas</option>
+                                    <option value="asc" selected="selected">ylös</option>
+                                </select>
+
+                            </td></tr><tr><td>
+                                Näytetään tuloksia</td><td>
+                                <select name="limit" onfocus="javascript:ohje('Näytettävien havaintojen lukumäärä','Valitse kuinka monta havaintoriviä yhdellä sivulla näytetään.')">
+                                    <option value="25" >25</option>
+                                    <option value="50" selected="selected">50</option>
+                                    <option value="75" >75</option>
+                                    <option value="100" >100</option>
+                                </select>
+
+                            </td>
+                            </tr></tbody></table>
+                        <!-- sorttaus loppuu  -->
+
+                    </td> <!-- iso table -->
+                </tr> <!-- iso table -->
+
+                <!-- Tietojen suodatus -->
+                <tr><td valign="top" class="kehys"> <!-- iso table -->
+
+                    <table> <!-- vasen alatable -->
+                        <tr>
+                            <td class="kehys" valign="top">
+                                <table>
+                                    <tr>
+                                        <td><br/><input type="radio" name="tilat" id="muuttavat" value="muuttavat"  onfocus="javascript:ohje('Muuttavat','Hae vain muuttavia lintuja.')"/></td>
+                                        <td><br/><label for="muuttavat">Muuttavat</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="radio" name="tilat" id="paikalliset" value="paikalliset"  onfocus="javascript:ohje('Paikalliset','Hae vain paikallisia lintuja.')"/></td>
+                                        <td><label for="paikalliset">Paikalliset</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="radio" name="tilat" id="kaikki" value="kaikki" checked="checked" onfocus="javascript:ohje('Muuttavat ja paikalliset','Hae kaikkia havaintoja.')"/></td>
+                                        <td><label for="kaikki">Kaikki</label></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="kehys" valign="top">
+                                <table> <!-- Harvinaisuustable alkaa -->
+                                    <tr>
+                                        <td></td><td>Suomi</td><td>Alue</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Harvinaisuudet</td>
+                                        <td><input id="firari" name="fi_rari" type="checkbox" onclick="rari_poisto()" onfocus="javascript:ohje('Valtakunnan harvinaisuudet','Näytä valtakunnantason harvinaisuudet.')"  /></td>
+                                        <td><input id="alrari" name="al_rari" type="checkbox" onclick="rekurs_rari()" onfocus="javascript:ohje('Paikallistason harvinaisuudet','Näytä paikallistason harvinaisuudet.')"  /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Aika</td>
+                                        <td><input id="fiaika" name="fi_aika" type="checkbox" onclick="aika_poisto()" onfocus="javascript:ohje('Valtakunnan fenologiset','Näytä valtakunnantason fenologisesti (mielenkiintoinen ajankohta) mielenkiintoiset havainnot.')"  /></td>
+                                        <td><input id="alaika" name="al_aika" type="checkbox" onclick="rekurs_aika()" onfocus="javascript:ohje('Alueelliset fenologiset','Näytä paikallistason fenologisesti (mielenkiintoinen ajankohta) mielenkiintoiset havainnot.')"  /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Määrä</td>
+                                        <td><input id="fimaara" name="fi_maara" type="checkbox" onclick="maara_poisto()" onfocus="javascript:ohje('Valtakunnan lukumäärä','Näytä valtakunnan lukumäärällisesti mielenkiintoiset havainnot.')"  /></td>
+                                        <td><input id="almaara" name="al_maara" type="checkbox" onclick="rekurs_maara()" onfocus="javascript:ohje('Paikallistason lukumäärä','Näytä paikallistason lukumäärällisesti mielenkiintoiset havainnot.')"  /></td>
+                                    </tr>
+                                </table> <!-- harvinaisuustable loppuu -->
+                            </td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td valign="top" colspan="2">
+                                            Tallenteet		</td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="top">
+                                            <input id="haku_kuva" name="haku_kuva" type="checkbox"  onfocus="javascript:ohje('Kuvat','Näytä havainnot, joihin liittyy kuvatallenteita.')" />
+                                        </td>
+                                        <td>
+                                            Kuvat		</td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="top">
+                                            <input id="haku_aani" name="haku_aani" type="checkbox"  onfocus="javascript:ohje('Äänitteet','Näytä havainnot, joihin liittyy äänitteitä.')" />
+                                        </td>
+                                        <td>
+                                            Äänitteet		</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td valign="top">
+                                            <input id="haku_video" name="haku_video" type="checkbox"  onfocus="javascript:ohje('Videot','Näytä havainnot, joihin liittyy youtube-video -tallenteita.')" />
+                                        </td>
+                                        <td>
+                                            Videot		</td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="top">
+                                            <input id="haku_linkki" name="haku_linkki" type="checkbox"  onfocus="javascript:ohje('Linkit','Näytä havainnot, joihin liittyy linkkejä ulkoisiin tallenteisiin.')" />
+                                        </td>
+                                        <td>
+                                            Linkit		</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="kehys" valign="top">
+                                <table>
+                                    <tr>        <!-- vasemman alatablen sisäkkäinen table-->
+                                        <td valign="top"><input id="omati" name="omatilm" type="checkbox"  onfocus="javascript:ohje('Omat ilmoitukset','Näytä vain omat havaintoilmoitukset.')" /></td>
+                                        <td><label for="omati">Omat ilmoitukset</label></td>
+                                    </tr>
+                                    <tr>
+                                        <td><input id="omath" name="omathav" type="checkbox"  onfocus="javascript:ohje('Omat havainnot','Näytä vain omat havainnot. Myös muiden käyttäjien ilmoittamat havainnot näytetään, joissa olet mukana.')"/></td>
+                                        <td><label for="omath">Omat havainnot</label></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="kehys" valign="top">
+                                <table> <!-- yksilömäärärajoitus alkaa -->
+                                    <tr>
+                                        <td><input id="yksmaaraid" name="yksmaara" size="4" maxlength="6" type="text" value = "1" onfocus="javascript:ohje('Minimiyksilömäärä','Voit rajoittaa haun tuloksia antamalla minimiyksilömäärän.')"/></td>
+                                        <td><label for="yksmaaraid">Minimiyksilömäärä</label></td>
+                                    </tr>
+                                    <tr id="negahakubox">
+                                        <td>
+                                            <input class="oikea" id="negahaku" name="negahaku" type="checkbox"  onfocus="javascript:ohje('Hae muita kuin lajikentän lajeja','Valitsemalla tämän hakutulokseesi tulevat kaikki muut lajit, mutta ei niitä, jotka olet kirjannut lajikenttään.')" />
+                                        </td>
+                                        <td>
+                                            Hae muita kuin lajikentän lajeja			</td>
+                                    </tr>
+                                </table> <!-- yksilömäärärajoitus loppuu -->
+                            </td>
+                        </tr>
+                    </table>
+
+                </td><td class="kehys" valign="top"> <!-- iso table -->
+                    <table> <!-- aikajaksorajoitus alkaa -->
+                        <tr> <!-- tänään -->
+                            <td><input type="radio" id="pvmt" name="paivamaara" value="0"  onfocus="javascript:ohje('Tänään','Näytä tämän päivän havainnot.')"/></td>
+                            <td><label for="pvmt">Tänään</label><br/></td>
+                        </tr>
+                        <tr> <!-- eilen ja tänään -->
+                            <td><input type="radio" id="pvme" name="paivamaara" value="1" checked="checked" onfocus="javascript:ohje('Eilen ja tänään','Näytä eilisen ja tämän päivän havainnot.')"/></td>
+                            <td><label for="pvme">Eilen ja tänään</label><br/></td>
+                        </tr>
+                        <tr> <!-- edelliset 7 pv -->
+                            <td><input type="radio" id="pvm7" name="paivamaara" value="2"  onfocus="javascript:ohje('Edelliset 7 päivää','Näytä edellisen 7 päivän havainnot.')"/></td>
+                            <td><label for="pvm7">Edelliset 7 päivää</label><br/></td>
+                        </tr>
+                        <tr> <!-- edelliset 30 pv -->
+                            <td><input type="radio" id="pvm30" name="paivamaara" value="4"  onfocus="javascript:ohje('Edelliset 30 päivää','Näytä edellisen 30 päivän havainnot.')"/></td>
+                            <td><label for="pvm30">Edelliset 30 päivää</label><br/></td>
+                        </tr>
+                        <tr> <!-- vapaat pv rajat -->
+                            <td><input type="radio" id="pvmn" name="paivamaara" onfocus="javascript:kohdistapvm()" value="3"  /></td>
+                            <td><label for="pvmn">Päivämäärä:<input type="text" size="7" maxlength="10" name="paivamaara_a" value="" onfocus="javascript:ohje('Vapaa päivämäärähaku','Anna päivämäärä mistä lähtien haluat hakea havaintoja. Anna päivämäärä muodossa \'2.10.2005\'. Voit jättää molemmat päivämäärät tyhjiksi, jolloin haussa ei ole päivämäärärajoitinta. Voit myös antaa vain loppupäivämäärän, jolloin haetaan kaikkia havaintoja ko. päivämäärään asti.')" /></label>&nbsp;-&nbsp;<input type="text" size="7" maxlength="10" name="paivamaara_l" value="" onfocus="javascript:ohje('Vapaa päivämäärähaku','Anna päivämäärä mihin asti haluat hakea havaintoja. Anna päivämäärä muodossa \'12.10.2005\'. Voit jättää tämän kentän tyhjäksi, jolloin havaintoja haetaan tähän päivään asti.')"/></td>
+                        </tr>
+                        <tr> <!-- aika-alue haku -->
+                            <td><input type="checkbox" id="aikaalue" name="aikaalue" onfocus="javascript:kohdistapvm3()"  /></td>
+                            <td><label for="aikaalue">Aika-alue &nbsp;</label><input type="text" size="3" maxlength="6" name="aikaalue1" value="" onfocus="javascript:ohje('Aika-alue ','Aika-alueen alkamispäivä. Voit hakea havaintoja tietyltä päivämääräväliltä useiden eri vuosien ajalta. Esimerkiksi 1.4. - 30.4. hakee kaikki huhtikuiset havainnot kautta aikojen. Huomaa laittaa yllä oleva päivämäärävalitsin vapaan päivämäärähaun kohtaan (voit halutessasi jättää vapaan päivämäärähakukentän tyhjäksi).')" />&nbsp;-&nbsp;<input type="text" size="3" maxlength="6" name="aikaalue2" value="" onfocus="javascript:ohje('Aika-alue ','Aika-alueen loppumispäivä. Voit hakea havaintoja tietyltä päivämääräväliltä useiden eri vuosien ajalta. Esimerkiksi 1.4. - 30.4. hakee kaikki huhtikuiset havainnot kautta aikojen. Huomaa laittaa yllä oleva päivämäärävalitsin vapaan päivämäärähaun kohtaan (voit halutessasi jättää vapaan päivämäärähakukentän tyhjäksi).')" /></td>
+                        </tr>
+                    </table> <!-- aikajaksorajoitus loppuu -->
+                </td>
+                </tr> <!-- iso table -->
+                <tr>
+                    <td colspan="2" id="help" class="formhelp_selain"><i>Ohje</i></td>
+                </tr>
+                <!-- Tietojen lähettäminen -->
+                <tr><td colspan="2">
+                    <span class="submitbutton"><input type = "submit" name = "haku" value = "Hae" onmouseover="javascript:ohje('Hae havaintoja',' ')" /></span>
+
+                    <!-- tässä loppuu haku lomake -->
+                    <!-- Näyttää ohjetekstin sivun lataamisen yhteydessä -->
+                    <script type="text/javascript">
+       <!--
+       ohje('','');
+       -->
+    </script>
+
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;<small><a target="_blank" href="kieli/fi/TIIRA_kayttooikeussopimus.pdf" onmouseover="javascript: ohje('Käyttöoikeussopimus (pdf-tiedosto)',' ')">Käyttöehdot</a></small>
+                </td></tr>
+                </tbody></table> <!-- iso table loppuu -->
+
+            <script type="text/javascript">
+    	<!-- 20131206 AJL Alustetaan negahaku -->
+    	dis_ena_negahaku(document.getElementById("paaformi").laji);
+    	 <!-- FOKUS LAJIIN -->
+ 		window.onload=focus_laji;
+    </script>
+        </form> <!-- hakuformi loppuu -->
+
+
+
+
+
+
+
+
+
+        <div style="float: left; padding: 10px 10px 10px 10px">
+            <form name="tallennalomake" method="post" action="index.php?toiminto=16">
+                <input type="hidden" name="eestaaspohja" value="?toiminto=29&amp;laji=&amp;negahaku=&amp;kunta=&amp;paikka=&amp;paivamaara=1&amp;paivamaara_a=&amp;paivamaara_l=&amp;order1=pvm1&amp;suunta1=desc&amp;order2=syst_ord&amp;suunta2=asc&amp;alue=3&amp;kerutoim=1&amp;omathav=&amp;omatilm=&amp;limit=50&amp;fi_rari=&amp;fi_aika=&amp;fi_maara=&amp;al_rari=&amp;al_aika=&amp;al_maara=&amp;yksmaara=1&amp;aikaalue=&amp;aikaalue1=&amp;aikaalue2=&amp;tilat=kaikki&amp;haku_kuva=&amp;haku_aani=&amp;haku_video=&amp;haku_linkki=&amp;haku=Hae"/>
+            </form>
+            <a href="javascript:document.tallennalomake.submit()" onmouseover="javascript:ohje('Tallenna haku','Voit tallentaa haun myöhempää käyttöä varten. Löydät tallennetut haut vasemmasta palkista kohdasta \'Omat haut\'.')">Tallenna haku</a>
+        </div>
+        <div style="float: left; padding: 10px 10px 10px 10px">
+            <a href="javascript:laskesumma()" onmouseover="javascript: ohje('Näytä havaintojen lukumäärä','Havaintojen lukumäärä tulostuu ponnahdusikkunaan.')">Näytä havaintojen lukumäärä</a>
+            &nbsp;&nbsp;&nbsp;
+            <a href="#" onclick="kartalle_kaikki('?laji=&amp;kunta=&amp;paikka=&amp;paivamaara=1&amp;paivamaara_a=&amp;paivamaara_l=&amp;alue=3&amp;omathav=&amp;omatilm=&amp;fi_rari=&amp;fi_aika=&amp;fi_maara=&amp;al_rari=&amp;al_aika=&amp;al_maara=&amp;yksmaara=1&amp;kerutoim=1&amp;tilat=kaikki&amp;aikaalue=&amp;aikaalue1=&amp;aikaalue2=&amp;kuntaidt_arraysta=&amp;tmptables=&amp;negahaku=&amp;haku_kuva=&amp;haku_aani=&amp;haku_video=&amp;haku_linkki=')"
+               onmouseover="javascript:ohje('Näytä havainnot kartalla','Voit tarkastella haun tuloksia kartalla. ')">Näytä havainnot kartalla</a>&nbsp;&nbsp;&nbsp;
+        </div>
+        <div style="float:left; padding:10px 10px 10px 10px"></div>
+
+        <div style="clear:left">
+            <table class="havaintolistaus">
+                <tr class="kapit"><td></td><td></td><td></td><td>
+                    <a href="index.php?toiminto=29&amp;laji=&amp;negahaku=&amp;kunta=&amp;paikka=&amp;paivamaara=1&amp;paivamaara_a=&amp;paivamaara_l=&amp;order1=syst_ord&amp;suunta1=asc&amp;order2=syst_ord&amp;suunta2=asc&amp;alue=3&amp;kerutoim=1&amp;omathav=&amp;omatilm=&amp;limit=50&amp;fi_rari=&amp;fi_aika=&amp;fi_maara=&amp;al_rari=&amp;al_aika=&amp;al_maara=&amp;yksmaara=1&amp;aikaalue=&amp;aikaalue1=&amp;aikaalue2=&amp;tilat=kaikki&amp;haku_kuva=&amp;haku_aani=&amp;haku_video=&amp;haku_linkki=&amp;haku=Hae" onmouseover="javascript:ohje('Lajittelu','Lajittele hakutulokset ensisijaisesti systemaattisen järjestyksen mukaan. ')">
+                        Laji    </a></td><td>
+                    <a href="index.php?toiminto=29&amp;laji=&amp;negahaku=&amp;kunta=&amp;paikka=&amp;paivamaara=1&amp;paivamaara_a=&amp;paivamaara_l=&amp;order1=pvm1&amp;suunta1=asc&amp;order2=syst_ord&amp;suunta2=asc&amp;alue=3&amp;kerutoim=1&amp;omathav=&amp;omatilm=&amp;limit=50&amp;fi_rari=&amp;fi_aika=&amp;fi_maara=&amp;al_rari=&amp;al_aika=&amp;al_maara=&amp;yksmaara=1&amp;aikaalue=&amp;aikaalue1=&amp;aikaalue2=&amp;tilat=kaikki&amp;haku_kuva=&amp;haku_aani=&amp;haku_video=&amp;haku_linkki=&amp;haku=Hae" onmouseover="javascript:ohje('Lajittelu','Lajittele hakutulokset ensisijaisesti päivämäärän mukaan. ')">
+                        Päivämäärä	<img src="alas.gif" border="0" width="8" alt="alas"/>    </a></td><td>
+                    <a href="index.php?toiminto=29&amp;laji=&amp;negahaku=&amp;kunta=&amp;paikka=&amp;paivamaara=1&amp;paivamaara_a=&amp;paivamaara_l=&amp;order1=kunta_fi&amp;suunta1=asc&amp;order2=syst_ord&amp;suunta2=asc&amp;alue=3&amp;kerutoim=1&amp;omathav=&amp;omatilm=&amp;limit=50&amp;fi_rari=&amp;fi_aika=&amp;fi_maara=&amp;al_rari=&amp;al_aika=&amp;al_maara=&amp;yksmaara=1&amp;aikaalue=&amp;aikaalue1=&amp;aikaalue2=&amp;tilat=kaikki&amp;haku_kuva=&amp;haku_aani=&amp;haku_video=&amp;haku_linkki=&amp;haku=Hae" onmouseover="javascript:ohje('Lajittelu','Lajittele hakutulokset ensisijaisesti kunnan nimen mukaan aakkosjärjestykseen.')">
+                        Kunta    </a></td><td>Paikka</td><td>    <a href="index.php?toiminto=29&amp;laji=&amp;negahaku=&amp;kunta=&amp;paikka=&amp;paivamaara=1&amp;paivamaara_a=&amp;paivamaara_l=&amp;order1=lukum&amp;suunta1=asc&amp;order2=syst_ord&amp;suunta2=asc&amp;alue=3&amp;kerutoim=1&amp;omathav=&amp;omatilm=&amp;limit=50&amp;fi_rari=&amp;fi_aika=&amp;fi_maara=&amp;al_rari=&amp;al_aika=&amp;al_maara=&amp;yksmaara=1&amp;aikaalue=&amp;aikaalue1=&amp;aikaalue2=&amp;tilat=kaikki&amp;haku_kuva=&amp;haku_aani=&amp;haku_video=&amp;haku_linkki=&amp;haku=Hae" onmouseover="javascript:ohje('Lajittelu','Lajittele hakutulokset ensisijaisesti lukumäärän mukaan. ')">
+                    Määrä    </a>
+
+                </td><td>Lisätietoja</td><td>Havainnoijat</td><td></td><td></td></tr>
+                <tr class="tumma">    <td>    </td>
+                    <!-- 20100427 AJL -->
+                    <td>
+                    </td>
+                    <!-- 20111221 AJL -->
+                    <td>
+                    </td>
+
+                    <td>
+                        <a class="havlista" href="javascript:naytahavis('25776265')" title="Näytä havainnon tiedot">
+                            Kyhmyjoutsen	</a>    </td>
+                    <!-- päivämäärä -->
+                    <td>
+                        3.5.2022    </td>
+
+                    <!-- KUNTA -->
+                    <td>Helsinki</td>
+
+                    <!-- PAIKKA -->
+                    <td>				<a class="havlista" href="javascript:kartalle('25776265')" title="Laajasalo, Yliskylänlahti. Näytä havaintopaikka kartalla">Laajasalo, Yliskylän...				</a></td>
+                    <!-- LUKUMÄÄRÄ -->
+                    <td>1</td>
+
+                    <!-- LISÄTIEDOT -->
+                    <td>
+                        hautoo pesäkummulla p     </td><td>Aaaa Bbbbbbb   </td>	<td>	    </td><td></td>    </tr>	<tr class="vaalea">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25776275')" title="Näytä havainnon tiedot">
+                        Tavi	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    3.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25776275')" title="Laajasalo, Yliskylänlahti. Näytä havaintopaikka kartalla">Laajasalo, Yliskylän...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>17</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    9 k p, 8 n p     </td><td>Aaaa Bbbbbbb </td>	<td>	    </td><td></td>    </tr>        <tr class="tumma">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25776252')" title="Näytä havainnon tiedot">
+                        Sinisorsa	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    3.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25776252')" title="Laajasalo, Yliskylänlahti. Näytä havaintopaikka kartalla">Laajasalo, Yliskylän...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>10</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    9 k  p, 1 n  p     </td><td>Aaaa Bbbbbbb    </td>	<td>	    </td><td></td>    </tr>	<tr class="vaalea">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25776242')" title="Näytä havainnon tiedot">
+                        Telkkä	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    3.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25776242')" title="Laajasalo, Yliskylänlahti. Näytä havaintopaikka kartalla">Laajasalo, Yliskylän...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>3</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    2 pariutuneet uuden pöntö...    </td><td>Aaaa Bbbbbbb  </td>	<td>	    </td><td></td>    </tr>        <tr class="tumma">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25776238')" title="Näytä havainnon tiedot">
+                        Silkkiuikku	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    3.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25776238')" title="Laajasalo, Yliskylänlahti. Näytä havaintopaikka kartalla">Laajasalo, Yliskylän...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>21</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    18 pariutuneet ainakin 9 ...    </td><td>Aaaa Bbbbbbb </td>	<td>	    </td><td></td>    </tr>	<tr class="vaalea">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25776245')" title="Näytä havainnon tiedot">
+                        Lapintiira	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    3.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25776245')" title="Laajasalo, Yliskylänlahti. Näytä havaintopaikka kartalla">Laajasalo, Yliskylän...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>3</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    p     </td><td>Aaaa Bbbbbbb   </td>	<td>	    </td><td></td>    </tr>        <tr class="tumma">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25776283')" title="Näytä havainnon tiedot">
+                        Pajulintu	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    3.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25776283')" title="Laajasalo, Yliskylänlahti. Näytä havaintopaikka kartalla">Laajasalo, Yliskylän...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>1</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    p Ä     </td><td>Aaaa Bbbbbbb  </td>	<td>	    </td><td></td>    </tr>	<tr class="vaalea">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25776280')" title="Näytä havainnon tiedot">
+                        Urpiainen	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    3.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25776280')" title="Laajasalo, Yliskylänlahti. Näytä havaintopaikka kartalla">Laajasalo, Yliskylän...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>1</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    p ä     </td><td>Aaaa Bbbbbbb   </td>	<td>	    </td><td></td>    </tr>        <tr class="tumma">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25776291')" title="Näytä havainnon tiedot">
+                        Pajusirkku	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    3.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25776291')" title="Laajasalo, Yliskylänlahti. Näytä havaintopaikka kartalla">Laajasalo, Yliskylän...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>1</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    k p     </td><td>Aaaa Bbbbbbb   </td>	<td>	    </td><td></td>    </tr>	<tr class="vaalea">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25763446')" title="Näytä havainnon tiedot">
+                        Uuttukyyhky	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    2.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25763446')" title="Laajasalo, Tahvonlahti. Näytä havaintopaikka kartalla">Laajasalo, Tahvonlah...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>1</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    p Ä     </td><td>Ccccc Ddddddddd    </td>	<td>	    </td><td></td>    </tr>        <tr class="tumma">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25772157')" title="Näytä havainnon tiedot">
+                        Haarapääsky	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    2.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25772157')" title="Laajasalo, Tullisaari. Näytä havaintopaikka kartalla">Laajasalo, Tullisaar...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>2</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    1a m W     </td><td>Aaaa Bbbbbbb  </td>	<td>	    </td><td></td>    </tr>	<tr class="vaalea">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25763442')" title="Näytä havainnon tiedot">
+                        Metsäkirvinen	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    2.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25763442')" title="Laajasalo, Tullisaari. Näytä havaintopaikka kartalla">Laajasalo, Tullisaar...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>1</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    m ä     </td><td>Cccc Ddddddd  </td>	<td>	    </td><td></td>    </tr>        <tr class="tumma">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25772349')" title="Näytä havainnon tiedot">
+                        Kivitasku	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    2.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25772349')" title="Laajasalo.Haakoninlahti. Näytä havaintopaikka kartalla">Laajasalo.Haakoninla...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>2</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    p     </td><td>Eeeee Fffff   </td>	<td>	    </td><td></td>    </tr>	<tr class="vaalea">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25763438')" title="Näytä havainnon tiedot">
+                        Pajulintu	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    2.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25763438')" title="Laajasalo, Tullisaari. Näytä havaintopaikka kartalla">Laajasalo, Tullisaar...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>1</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    p Ä     </td><td>Cccc Ddddddddd </td>	<td>	    </td><td></td>    </tr>        <tr class="tumma">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25776054')" title="Näytä havainnon tiedot">
+                        Pajulintu	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    2.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25776054')" title="Laajasalo, Tullisaari. Näytä havaintopaikka kartalla">Laajasalo, Tullisaar...				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>1</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    p Ä     </td><td>Aaaa Bbbbbbb </td>	<td>	    </td><td></td>    </tr>	<tr class="vaalea">    <td>    </td>
+                <!-- 20100427 AJL -->
+                <td>
+                </td>
+                <!-- 20111221 AJL -->
+                <td>
+                </td>
+
+                <td>
+                    <a class="havlista" href="javascript:naytahavis('25773369')" title="Näytä havainnon tiedot">
+                        Kirjosieppo	</a>    </td>
+                <!-- päivämäärä -->
+                <td>
+                    2.5.2022    </td>
+
+                <!-- KUNTA -->
+                <td>Helsinki</td>
+
+                <!-- PAIKKA -->
+                <td>				<a class="havlista" href="javascript:kartalle('25773369')" title="Laajasalo, Yliskylä. Näytä havaintopaikka kartalla">Laajasalo, Yliskylä				</a></td>
+                <!-- LUKUMÄÄRÄ -->
+                <td>1</td>
+
+                <!-- LISÄTIEDOT -->
+                <td>
+                    k p     </td><td>Gggg Hhhhhhh, Iiii Jjjj...    </td>	<td>	    </td><td></td>    </tr></table>  <!-- havaintolistauksen table loppuu -->
+        </div>
+        <br/>&nbsp;&nbsp;</div> <!-- isokehys loppuu -->
+
+    <div class="copytext">
+        <br/><small><small>Lataus kesti 1.5053 s</small></small>
+    </div>
+
+</div><div id="navi">	<div id="nav">
+    <h2>Navigointi</h2>
+    <a name="navi-a"></a>
+    <div id="normal">
+        <ul>
+            <li><a href="index.php" id="etusivu">Etusivu</a></li>
+            <li class="otsikko"><b>Ilmoita havainto</b>
+                <ul>
+                    <li><a href="index.php?toiminto=6" id="ilmoita">Peruslomake</a></li>
+                    <li class="noborder"><a href="index.php?toiminto=6&amp;muutto=1" id="ilmoita2">Muuttolomake</a></li>
+                </ul>
+            </li>
+            <li><a href="index.php?toiminto=22">Omat paikat</a></li>
+            <li><a href="javascript:omatkaverit()">Omat kaverit</a></li>	<!-- 20090827 AJL -->
+            <li class="otsikko"><b>Havaintoselain</b>
+                <ul>
+                    <li><a href="index.php?toiminto=8" id="hakukriteerit">Perushaku</a></li>
+                    <li><a href="index.php?toiminto=29" id="advancedhaku">Laaja haku</a></li>
+                    <li><a href="index.php?toiminto=48" id="havaintosivut">Havaintosivut</a></li>
+
+                    <li><a href="index.php?toiminto=55" id="ekahavainnot">Vuoden ensimmäiset</a></li>
+                    <li><a href="index.php?toiminto=53" id="ekahavainnot_alue">Vuoden ensimmäiset alue</a></li>
+                    <li><a href="index.php?toiminto=72" id="vikahavainnot">Vuoden viimeiset</a></li>
+                    <li><a href="index.php?toiminto=75" id="vikahavainnot_alue">Vuoden viimeiset alue</a></li>
+                    <!-- 20140305 AJL -->
+                    <li><a href="index.php?toiminto=76" id="ensihavainnot">Ensihavainnot</a></li>
+                    <li><a href="index.php?toiminto=17" id="omat_haut">Omat haut</a></li>
+                    <li><a href="index.php?toiminto=18" id="admin_haut">Yhdistyshaut</a></li>
+                    <li class="noborder"><a href="index.php?toiminto=19" id="uber_haut">Valtakunnan haut</a></li>
+
+                </ul>
+            </li>
+            <li class="otsikko"><b>Lajitietoa</b>
+                <ul>
+                    <li><a href="index.php?toiminto=7" id="etsitaksoni">Etsi laji</a></li>
+                    <li><a href="index.php?toiminto=67" id="tallenneselain">Tallenneselain</a></li>
+
+                    <!-- <li><a href="index.php?toiminto=3" id="lajinaytto">Selaa lajeja</a></li> -->
+                    <li><a href="index.php?toiminto=63" id="rk_ark_lajit">ARK-RK -lajit</a></li>
+                    <li class="noborder"><a target="_blank" href="/rapot/taksonit.html" id="taksonilinkki">Taksoninimikkeet</a></li> <!-- 20120207 AJL -->
+                </ul>
+            </li>
+            <li><a href="index.php?toiminto=13" id="statistiikka">Tilastoja</a></li>
+            <li><a target="_blank" href="https://tiedostot.birdlife.fi/ohjeet/tiira_ohje_fi.pdf" id="ohjeet">Ohjeet</a></li>
+            <!-- 20091222 AJL <li><a target="_blank" href="Tiira-bruksanvisning.html" id="svenska">Bruksanvisning</a></li> -->
+            <li><a href="index.php?toiminto=44" id="yhdistyskayttajat_nettiin">Yhdistyskäyttäjät</a></li>
+            <li><a href="https://www.tiirafoorumi.info/keskustelu/phpBB3/index.php" target="_blank" id="foorumi">Foorumi</a></li>
+            <!-- 20131218 AJL
+            <li><a href="https://www.birdlife.fi/tiira-blogi/" target="_blank" id="tiirablogi">Tiira-blogi</a></li>
+            20161101 AJL  -->
+        </ul>
+    </div>
+    <div id="footer">
+        <p>
+            &copy; <a href="https://www.birdlife.fi" target="_blank">BirdLife Suomi ry</a>
+        </p>
+        <p>
+            Ongelmia? Palautetta? Kysy  <a href="https://www.tiirafoorumi.info/keskustelu/phpBB3/index.php" target="_blank">foorumilta</a>
+        </p>
+    </div>
+</div>
+</div><small>Olet rekisteröitynyt jäsen</small></div></body>
+</html>
