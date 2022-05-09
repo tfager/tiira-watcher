@@ -65,6 +65,17 @@
                          (is result-ok?)
                          ))))
 
+(deftest find-next-page-num-test
+  (testing "No link"
+    (let [page (tiira/find-next-page-num (read-html-res "result.html"))]
+      (is (nil? page))))
+  (testing "One link"
+    (let [page (tiira/find-next-page-num (read-html-res "result_multipage.html"))]
+      (is (= "1" page))))
+  (testing "Two links"
+    (let [page (tiira/find-next-page-num (read-html-res "result_bothnavi.html"))]
+      (is (= "3" page))))
+  )
 (deftest advanced-search-test
   (testing "No results"
     (stub/with-routes! {{:method      :get

@@ -68,6 +68,7 @@
             (subvec parsed-data 2))))
 
 (defn -parse-search-result [s-tags]
+  ;(println "S-tags = " s-tags)
   {
    :species  (-> s-tags (get-in [5 2 2]) (str/trim))
    :date     (-> s-tags (get-in [6 2]) (str/trim))
@@ -77,6 +78,7 @@
    :count    (-> s-tags (get-in [9 2]) (str/trim))
    :extra    (-> s-tags (get-in [10 2]) (str/trim))
    }
+  ;; TODO: nullpointer at row 78?
   )
 
 (defn -parse-search-results [html]
@@ -86,6 +88,10 @@
         result (map -parse-search-result sightings)]
     result
     ))
+
+
+(defn find-next-page-num [content]
+  (second (re-find #"haku=Hae&amp;sivu=(\d+)\" onmouseover=\"javascript: ohje\('Seuraava'" content)))
 
 (defn advanced-search
   ([] (advanced-search 0 []))
@@ -97,7 +103,9 @@
      (if (str/includes? (:body resp) no-sightings-string)
        []
        (if (str/includes? (:body resp) next-page-string)
-         (let [next-page-num (second (re-find #"haku=Hae&amp;sivu=(\d+)" (:body resp)))]
+         (let [next-page-num (find-next-page-num (:body resp))]
+           (println "Getting page " next-page-num
+                    ", " (count results-so-far) " results so far")
            (advanced-search next-page-num
                             (concat results-so-far (-parse-search-results (:body resp))))
          )
