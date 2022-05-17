@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Tiira - Näytä havainto</title>
+    <link rel="stylesheet" type="text/css" href="../screen-basic.css"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body>
+<div class="naytahavis">
+    <script type="text/javascript">
+function postita2(idnum,havainto) {
+	/* 20120421 AJL mukaan havainto_id */
+   var url="../postita.php?id="+idnum+'&havainto_id='+havainto;
+   var topvar = 170;
+   var leftvar = screen.width - 780;
+   window.open(url,"uusi_ikkuna2", "toolbar=no,location=no,directories=no,status=no, menubar=no, scrollbars=yes, resizable=yes,copyhistory=no,width=600, height=400, top="+topvar+", left="+leftvar+" ");
+}
+
+function vinkkiIkkuna(havainto) {
+    /* 20200719 AJL */
+   var url="liputus.php?havainto_id="+havainto;
+   var topvar = 170;
+   var leftvar = screen.width - 780;
+   window.open(url,"Vinkkaa yhdistyskäyttäjälle", "toolbar=no,location=no,directories=no,status=no, menubar=no, scrollbars=yes, resizable=yes,copyhistory=no,width=600, height=400, top="+topvar+", left="+leftvar+" ");
+}
+</script>
+    <script
+            language="JavaScript" type="text/javascript" src="advancedjavascr.js">
+    </script>
+    <script
+            language="JavaScript" type="text/javascript" src="/javascr.js">
+    </script>
+    <div class="nh_lajirivi">
+        Kyhmyjoutsen CYGOLO, 29     &nbsp;
+        <a href="javascript:vinkkiIkkuna(25860498)" title="Vinkkilomakkeella voit vinkata havainnosta yhdistyskäyttäjälle." alt="vinkki"> <img src="../images/vinkkaa.png"></a>
+    </div>
+    <div>
+        <b>11.5.2022</b> Espoo, 		<a href="javascript:kartalle('25860498')" title="Näytä havaintopaikka kartalla">Laajalahti, Maarin torni</a>
+        <br/>Havainnoijan paikka: 6674514:379059<br/>Linnun paikka: 6674886:379675</div>Havainnointiaika: 05:40-07:10<table class="havisnaytto">    <tr class="naytahavi">
+    <td>1   ad        </td>
+    <td>p</td>
+    <td>
+    </td><td>
+    &nbsp;
+    <tr class="naytahavi">
+        <td>28   </td>
+        <td>p</td>
+        <td>
+        </td><td>
+        &nbsp;
+    </td></tr></table>
+    <br/>
+    Lintuatlaksen pesimävarmuusindeksi: 	<span class="nh_atlaskoodi">
+		75	</span>
+
+    <table class="havisnaytto2">
+        <tr><td>Havainnoijat: </td><td>
+            Aaaaa Bbbbbbb</td></tr>
+        <tr><td>Ilmoittaja: </td><td>
+            <a href="javascript:postita2('1610',25860498)" title="Lähetä sähköpostiviesti havainnon ilmoittajalle">Aaaaa Bbbbbbb</a>
+        </td></tr>
+    </table>
+    <br/>
+    <span class="nh_alkuperaiset">
+</span>
+    <br/>
+
+    <div align="center">
+        <input type="button" class="painike" name="sulje" value="Sulje" onclick="window.close()" />
+        <br/><br/>
+    </div>
+    <div>
+    </div> <!-- yhdistyskommentti/tarkistustila -->
+    <br/><small><small>Lataus kesti 0.0832 s</small></small><br/>
+</div> <!-- naytahavis loppuu -->
+</body>
+</html>
