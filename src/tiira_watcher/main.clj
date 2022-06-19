@@ -1,5 +1,6 @@
 (ns tiira_watcher.main
   (:require [tiira_watcher.tiira :as tiira]
+            [tiira-watcher.firestore :as store]
             [geo-conversion.core :as geo]
             )
   (:import (java.util Date)))
@@ -19,6 +20,8 @@
                           :maxy 6678982.0, :maxx 391685.0}
             :itauusimaa  {:miny 6676634.0, :minx 397913.0
                           :maxy 6712327.0, :maxx 412779.0}
+            :pks         {:miny 6669446.0, :minx 377330.0
+                          :maxy 6693623.0, :maxx 404202.0}
             })
 
 (def blacklist #{"Harmaahaikara"
@@ -40,6 +43,14 @@
                  "Naakka"
                  "Varis"
                  "Kirjosieppo"
+                 "Joutsenlaji"
+                 "Hanhilaji"
+                 "Sinisorsa"
+                 "Telkkä"
+                 "Varpunen"
+                 "Pikkuvarpunen"
+                 "Tiltaltti"
+                 "Västäräkki"
                  })
 
 
@@ -96,8 +107,10 @@
                        (Thread/sleep 500)
                        es)))
         grouped (tiira/group-by-location enriched)
+        db      (store/connect-db)
         ]
     (render-leaflet-grouped area grouped)
-
+    (doseq [s enriched]
+      (store/write-sighting db s)
+      )
     ))
-

@@ -5,6 +5,8 @@
             [clojure.spec.alpha :as s]
             [pl.danieljanus.tagsoup :as tags]
             [geo-conversion.core :as geo]
+            [clj-time.format :as timefmt]
+            [clj-time.coerce :as timec]
             )
   (:import (java.nio.charset StandardCharsets)))
 ;            [taoensso.timbre :as timbre :refer [log trace debug info warn]
@@ -21,6 +23,7 @@
 (def bird-loc-re #"Linnun paikka: (\d+):(\d+)")
 (def time-re #"Havainnointiaika: ([^<]+)")
 (def min-coordinate-difference 1.0)
+(def findate-formatter (timefmt/formatter-local "dd.MM.yyyy"))
 
 (def tiira-http-defaults {
                           :cookie-store cookie-store        ; When cookie-store is there, session is stored automatically
@@ -87,6 +90,13 @@
    }
   )
 
+(defn -add-timestamp [sighting]
+  (assoc sighting
+    :timestamp
+    (try
+      (timec/to-long (timefmt/parse findate-formatter (:date sighting)))
+      (catch Exception e (System/currentTimeMillis)))))
+
 (defn -parse-search-results [html]
   (let [parsed (-> html
                    ; Tagsoup would find the latin-1 encoding in HTML.
@@ -95,7 +105,9 @@
                    (tags/parse-string))
         stable (first (find-rec parsed sighting-table? []))
         sightings (drop 3 stable)
-        result (map -parse-search-result sightings)]
+        result (map -parse-search-result sightings)
+        result (map -add-timestamp result)
+        ]
     result
     ))
 
@@ -188,13 +200,13 @@
   {:pre  [(s/valid? :tiira/sightings sightings)]
    :post [(s/valid? (s/coll-of :tiira/sighting-bucket) %)]}
   (let [groups (group-by (juxt :spotter-latitude :spotter-longitude) sightings)]
-    (map (fn [group] {:loc-name  (:loc-name (first group))
-                      :spotter-latitude (:spotter-latitude (first group))
+    (map (fn [group] {:loc-name          (:loc-name (first group))
+                      :spotter-latitude  (:spotter-latitude (first group))
                       :spotter-longitude (:spotter-longitude (first group))
-                      :bird-latitude (:bird-latitude (first group))
-                      :bird-longitude (:bird-longitude (first group))
-                      :wgs-latitude (:wgs-latitude (first group))
-                      :wgs-longitude (:wgs-longitude (first group))
-                      :sightings group})
+                      :bird-latitude     (:bird-latitude (first group))
+                      :bird-longitude    (:bird-longitude (first group))
+                      :wgs-latitude      (:wgs-latitude (first group))
+                      :wgs-longitude     (:wgs-longitude (first group))
+                      :sightings         group})
          (vals groups))
     ))
