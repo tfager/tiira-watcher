@@ -2,8 +2,14 @@
   (:require [tiira_watcher.tiira :as tiira]
             [tiira-watcher.firestore :as store]
             [geo-conversion.core :as geo]
+            [environ.core :refer [env]]
+            [java-time :as jt]
+            [java-time.convert :as jtc]
+            [java-time.temporal :as jtt]
             )
-  (:import (java.util Date)))
+  (:import (java.util Date))
+  )
+
 
 (def areas {
             :tikkurila   {:miny 6684066.0, :minx 389806.0
@@ -93,7 +99,7 @@
       (println (str "    .bindPopup('" (:loc-name s) " " (:species s) " "
                     (:extra s) " " (:date s) " " (:time s) "');")))))
 
-(defn -main [username password area]
+(defn tiira-search [username password area]
   (tiira/tiira-login username password)
   (tiira/store-map-border (get areas (keyword area)))
   (let [result (tiira/advanced-search)
@@ -105,12 +111,28 @@
                      (let [es (tiira/enrich-sighting s)]
                        ; (println es)
                        (Thread/sleep 500)
-                       es)))
-        grouped (tiira/group-by-location enriched)
-        db      (store/connect-db)
-        ]
-    (render-leaflet-grouped area grouped)
+                       es)))]
+    enriched
+  ))
+
+(defn tiira-search-and-store [db area]
+  (println "Searching " area)
+  (when-not (contains? env :tiira-username) (throw (IllegalStateException. "Missing environment variable TIIRA_USERNAME")))
+  (when-not (contains? env :tiira-password) (throw (IllegalStateException. "Missing environment variable TIIRA_PASSWORD")))
+  (let [username (:tiira-username env)
+        password (:tiira-password env)
+        enriched (tiira-search username password area)]
     (doseq [s enriched]
-      (store/write-sighting db s)
-      )
+      (println (:species s) " " (:date s) " " (:time s) " "
+               (:osm-url s) " " (:loc-name s) " " (:extra s))
+      (store/write-sighting db s))
+    (println "Stored " (count enriched) " sightings")
     ))
+
+(defn -main [command & rest]
+  (let [clean-upto (jt/minus (jt/instant) (jt/days 7))
+        db (store/connect-db)]
+  (case command
+    "search"    (tiira-search-and-store db (first rest))
+    "clean"     (store/clean-sightings db (inst-ms clean-upto))
+    )))

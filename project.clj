@@ -14,6 +14,7 @@
                  [ring/ring-jetty-adapter "1.9.2"]
                  [ring/ring-json "0.5.1"]
                  [compojure "1.7.0"]
+                 [clojure.java-time "0.3.3"]
                  ]
   :source-paths ["src"]
   :repl-options {:init-ns tiira_watcher.main}

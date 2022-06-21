@@ -28,3 +28,7 @@
         (fs/order-by "timestamp" :desc)
         fs/pullv)
   ))
+
+(defn clean-sightings [db end-timestamp]
+    (fs/delete-all! (-> (fs/coll db sightings-index)
+                        (fs/filter<= "timestamp" end-timestamp))))
