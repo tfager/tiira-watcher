@@ -1,4 +1,4 @@
-(defproject tiira-watcher "0.1.0-SNAPSHOT"
+(defproject tiira-watcher "0.9.1"
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [clj-http "3.12.1"]
                  [clj-tagsoup "0.3.0" :exclusions [org.clojure/clojure]]
@@ -13,6 +13,7 @@
                  [ring/ring-core "1.9.5"]
                  [ring/ring-jetty-adapter "1.9.2"]
                  [ring/ring-json "0.5.1"]
+                 [ring-cors "0.1.13"]
                  [compojure "1.7.0"]
                  [clojure.java-time "0.3.3"]
                  ]
@@ -26,4 +27,6 @@
                    :env { :firestore-credentials-file
                             "/home/tfager/pubgit/tfager/tiira-watcher/terraform/gcp-tiira-watcher-dev-aa5c85e6df09.json"
                          }
-                   }})
+                   }
+              :uberjar {:aot :all}
+             })

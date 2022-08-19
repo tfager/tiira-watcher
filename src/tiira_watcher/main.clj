@@ -1,14 +1,13 @@
 (ns tiira_watcher.main
   (:require [tiira_watcher.tiira :as tiira]
             [tiira-watcher.firestore :as store]
+            [tiira-watcher.server :as server]
             [geo-conversion.core :as geo]
             [environ.core :refer [env]]
             [java-time :as jt]
-            [java-time.convert :as jtc]
-            [java-time.temporal :as jtt]
             )
   (:import (java.util Date))
-  )
+  (:gen-class))
 
 
 (def areas {
@@ -28,6 +27,8 @@
                           :maxy 6712327.0, :maxx 412779.0}
             :pks         {:miny 6669446.0, :minx 377330.0
                           :maxy 6693623.0, :maxx 404202.0}
+            :pori        {:miny 6805114.0, :minx 194371.0
+                          :maxy 6853794.0, :maxx 241744.0}
             })
 
 (def blacklist #{"Harmaahaikara"
@@ -135,4 +136,5 @@
   (case command
     "search"    (tiira-search-and-store db (first rest))
     "clean"     (store/clean-sightings db (inst-ms clean-upto))
+    "server"    (server/-main)
     )))
