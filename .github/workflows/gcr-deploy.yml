@@ -72,7 +72,7 @@ jobs:
         uses: actions/download-artifact@main
         with:
           name: jar
-          path: docker/target/tiira-watcher.jar
+          path: docker/target/
 
       - name: Setup GCloud Auth
         id: auth
@@ -85,6 +85,9 @@ jobs:
 
       - name: Set version
         run: echo "VERSION=$(head -1 project.clj | cut -d " " -f 3 | sed -e 's/"//g')" | tee -a $GITHUB_ENV
+
+      - name: Rename jar file
+        run: mv docker/target/tiira-watcher-${{ env.VERSION }}-standalone.jar docker/target/tiira-watcher.jar
 
       # Build and push image to Google Container Registry
       - name: Build & Push
