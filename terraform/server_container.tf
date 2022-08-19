@@ -3,6 +3,7 @@ resource "google_service_account" "service_account_apigw" {
   display_name = "API GW Service Account"
 }
 
+# TODO: remove -- handled from GHA
 resource "google_cloud_run_service" "tiira_watcher_api" {
   name     = "tiira-watcher-api"
   location = "europe-north1"

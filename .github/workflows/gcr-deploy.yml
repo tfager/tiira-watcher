@@ -10,6 +10,7 @@ env:
   RUN_REGION: europe-north1
   SERVICE_NAME: tiira-watcher
   REPO_NAME: tiira-watcher-repo
+  UI_SERVER_ADDRESS: ${{ secrets.UI_SERVER_ADDRESS }}
 
 jobs:
   build:
@@ -49,11 +50,14 @@ jobs:
       - name: Compile code
         run: lein uberjar
 
+      - name: Set version
+        run: echo "VERSION=$(head -1 project.clj | cut -d " " -f 3 | sed -e 's/"//g')" | tee -a $GITHUB_ENV
+
       - name: Archive Production Artifact
         uses: actions/upload-artifact@main
         with:
-          name: target
-          path: target
+          name: jar
+          path: target/tiira-watcher-${{ env.VERSION }}-standalone.jar
 
   deploy-gcr:
     name: Deploy to GCR
@@ -67,8 +71,8 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@main
         with:
-          name: target
-          path: docker/target
+          name: jar
+          path: docker/target/tiira-watcher.jar
 
       - name: Setup GCloud Auth
         id: auth
@@ -81,9 +85,6 @@ jobs:
 
       - name: Set version
         run: echo "VERSION=$(head -1 project.clj | cut -d " " -f 3 | sed -e 's/"//g')" | tee -a $GITHUB_ENV
-
-      - name: Rename jar for easy access from docker
-        run: mv docker/target/tiira-watcher-${{ env.VERSION }}-standalone.jar docker/target/tiira-watcher.jar
 
       # Build and push image to Google Container Registry
       - name: Build & Push
@@ -100,5 +101,6 @@ jobs:
             --quiet \
             --region "$RUN_REGION" \
             --image "$RUN_REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$SERVICE_NAME:${{ env.VERSION }}" \
-            --platform "managed" \
-            --allow-unauthenticated
+            --set-env-vars=FIRESTORE_PROJECT_ID=$PROJECT_ID \
+            --set-env-vars=UI_SERVER_ADDRESS=$UI_SERVER_ADDRESS \
+            --platform "managed"
