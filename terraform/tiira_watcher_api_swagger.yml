@@ -16,14 +16,14 @@ securityDefinitions:
     x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/firebase-adminsdk-b6jhl@tiira-watcher-dev.iam.gserviceaccount.com"
     x-google-audiences: "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit"
 paths:
-  /v1/hello:
+  /sightings:
     get:
       security:
         - firebase: []
-      description: Hello
-      operationId: hello
+      description: Get all sightings within time period, default 1 day
+      operationId: get-sightings
       responses:
         '200':
           description: Success
       x-google-backend:
-        address: 'https://hello-vodgsvsqja-lz.a.run.app'
+        address: 'https://tiira-watcher-api-vodgsvsqja-lz.a.run.app'

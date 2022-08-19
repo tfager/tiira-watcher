@@ -26,10 +26,12 @@ resource "google_api_gateway_api_config" "api_cfg" {
   }
 }
 
+# API GW not available in europe-north1 as of this writing: https://cloud.google.com/api-gateway/docs/deployment-model
 resource "google_api_gateway_gateway" "api_gw" {
   provider   = google-beta
   api_config = google_api_gateway_api_config.api_cfg.id
   gateway_id = "api-gw"
+  region = "europe-west1"
   lifecycle {
     ignore_changes = [
       api_config
