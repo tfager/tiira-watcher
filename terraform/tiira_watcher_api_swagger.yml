@@ -15,6 +15,9 @@ securityDefinitions:
     x-google-issuer: "firebase-adminsdk-b6jhl@tiira-watcher-dev.iam.gserviceaccount.com"
     x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/firebase-adminsdk-b6jhl@tiira-watcher-dev.iam.gserviceaccount.com"
     x-google-audiences: "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit"
+x-google-endpoints:
+  - name: https://api-gw-8jy625wu.ew.gateway.dev
+    allowCors: True
 paths:
   /sightings:
     get:
@@ -26,4 +29,12 @@ paths:
         '200':
           description: Success
       x-google-backend:
-        address: 'https://tiira-watcher-api-vodgsvsqja-lz.a.run.app'
+        address: 'https://tiira-watcher-vodgsvsqja-lz.a.run.app'
+    options:
+      description: Get all sightings CORS preflight request
+      operationId: options-sightings
+      responses:
+        '200':
+          description: Success
+      x-google-backend:
+        address: 'https://tiira-watcher-vodgsvsqja-lz.a.run.app'
