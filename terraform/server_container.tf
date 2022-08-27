@@ -3,15 +3,14 @@ resource "google_service_account" "service_account_apigw" {
   display_name = "API GW Service Account"
 }
 
-# TODO: remove -- handled from GHA
 resource "google_cloud_run_service" "tiira_watcher_api" {
-  name     = "tiira-watcher-api"
+  name     = "tiira-watcher"
   location = "europe-north1"
 
   template {
     spec {
       containers {
-          image = "europe-north1-docker.pkg.dev/tiira-watcher-dev/tiira-watcher-repo/tiira-watcher:0.9.0"
+          image = "europe-north1-docker.pkg.dev/tiira-watcher-dev/tiira-watcher-repo/tiira-watcher:${var.server_version}"
 		  env {
 			name = "FIRESTORE_PROJECT_ID"
 			value = "tiira-watcher-dev"
@@ -20,6 +19,14 @@ resource "google_cloud_run_service" "tiira_watcher_api" {
 		    name = "UI_SERVER_ADDRESS"
 		    value = "https://tiira-watcher-ui-vodgsvsqja-lz.a.run.app"
 		    # TODO: From TF outputs
+		  }
+		  env {
+		    name = "TIIRA_USERNAME"
+		    value = var.tiira_username
+		  }
+		  env {
+		    name = "TIIRA_PASSWORD"
+		    value = var.tiira_password
 		  }
       }
     }
@@ -33,7 +40,7 @@ resource "google_cloud_run_service" "ui" {
   template {
     spec {
       containers {
-        image = "europe-north1-docker.pkg.dev/tiira-watcher-dev/tiira-watcher-repo/tiira-watcher-ui:b9dd7dce399f07e05d142d2431ae18916dd49d18"
+        image = "europe-north1-docker.pkg.dev/tiira-watcher-dev/tiira-watcher-repo/tiira-watcher-ui:${var.ui_version}"
       }
     }
   }

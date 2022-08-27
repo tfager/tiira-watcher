@@ -19,6 +19,21 @@ variable location_full {
     type = string
 }
 
+variable server_version {
+    type = string
+}
+
+variable ui_version {
+    type = string
+}
+
+variable tiira_password {
+    type = string
+}
+
+variable tiira_username {
+    type = string
+}
 provider "google" {
   credentials = file(var.gcloud_creds_file)
 

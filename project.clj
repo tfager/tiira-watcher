@@ -1,4 +1,4 @@
-(defproject tiira-watcher "0.9.1"
+(defproject tiira-watcher "0.9.2"
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [clj-http "3.12.1"]
                  [clj-tagsoup "0.3.0" :exclusions [org.clojure/clojure]]
