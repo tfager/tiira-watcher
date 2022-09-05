@@ -1,4 +1,4 @@
-(ns tiira_watcher.main
+(ns tiira-watcher.main
   (:require [tiira-watcher.firestore :as store]
             [tiira-watcher.server :as server]
             [tiira-watcher.logic :as logic]

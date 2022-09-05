@@ -1,5 +1,5 @@
-(ns tiira_watcher.logic
-  (:require  [tiira_watcher.tiira :as tiira]
+(ns tiira-watcher.logic
+  (:require  [tiira-watcher.tiira :as tiira]
              [tiira-watcher.firestore :as store]
              [environ.core :refer [env]]
   ))

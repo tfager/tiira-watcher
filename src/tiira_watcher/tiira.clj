@@ -1,4 +1,4 @@
-(ns tiira_watcher.tiira
+(ns tiira-watcher.tiira
   (:require [clj-http.client :as http]
             [clj-http.cookies :as cookies]
             [clojure.string :as str]
