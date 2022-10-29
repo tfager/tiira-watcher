@@ -59,7 +59,7 @@
 (def app
   (-> api-routes
       (rcors/wrap-cors :access-control-allow-origin [ui-server-address-regex]
-                       :access-control-allow-methods [:get])
+                       :access-control-allow-methods [:get :post])
       (rjson/wrap-json-response)
       (rjson/wrap-json-body { :keywords? true })
       ))

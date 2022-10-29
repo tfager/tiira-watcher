@@ -33,7 +33,7 @@ Cloud service to prefetch bird sightings from Tiira service and present them nic
 
 ## Github Actions Setup
 
-1. Download service account key: ```gcloud iam service-accounts keys create gha-gcloud-sa.json 
+1. Create & download service account key: ```gcloud iam service-accounts keys create gha-gcloud-sa.json 
    --iam-account=github@${PROJECT}.iam.gserviceaccount.com```
 2. Add secret GCR_PROJECT (value is project ID)
 3. Add secret GCR_SA_KEY (value is the entire JSON from step 1)

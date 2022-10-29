@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Example Gateway
   description: API Gateway with firebase auth
-  version: 1.0.0
+  version: 1.1.0
 schemes:
   - https
 produces:
@@ -14,7 +14,7 @@ securityDefinitions:
     type: oauth2
     x-google-issuer: "https://securetoken.google.com/tiira-watcher-dev"
     x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
-    x-google-audiences: "tiira-watcher-dev"
+    x-google-audiences: "${project}"
 x-google-endpoints:
   - name: https://api-gw-8jy625wu.ew.gateway.dev
     allowCors: True
@@ -29,7 +29,7 @@ paths:
         '200':
           description: Success
       x-google-backend:
-        address: 'https://tiira-watcher-vodgsvsqja-lz.a.run.app/sightings'
+        address: "${api_endpoint}/sightings"
     options:
       description: Get all sightings CORS preflight request
       operationId: options-sightings
@@ -37,4 +37,23 @@ paths:
         '200':
           description: Success
       x-google-backend:
-        address: 'https://tiira-watcher-vodgsvsqja-lz.a.run.app/sightings'
+        address: "${api_endpoint}/sightings"
+  /search:
+    post:
+      security:
+        - firebase: []
+      description: Post new search request
+      operationId: post-search
+      responses:
+        '200':
+          description: Success
+      x-google-backend:
+        address: "${api_endpoint}/search"
+    options:
+      description: Get all sightings CORS preflight request
+      operationId: options-search
+      responses:
+        '200':
+          description: Success
+      x-google-backend:
+        address: "${api_endpoint}search"

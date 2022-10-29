@@ -2,6 +2,8 @@ pom.xml
 pom.xml.asc
 *.jar
 *.class
+*.tfvars
+*.tfstate*
 /lib/
 /classes/
 /target/
@@ -13,3 +15,8 @@ pom.xml.asc
 .nrepl-port
 .cpcache/
 /terraform/gcp-*.json
+tiira-watcher-dev*.json
+.idea
+.lein-env
+.terraform*
+.pw.txt

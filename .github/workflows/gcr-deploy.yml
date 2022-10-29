@@ -96,14 +96,3 @@ jobs:
             --quiet \
             --tag "$RUN_REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$SERVICE_NAME:${{ env.VERSION }}"
         working-directory: docker
-
-      # Deploy image to Cloud Run
-      - name: Deploy GCR
-        run: |-
-          gcloud run deploy "$SERVICE_NAME" \
-            --quiet \
-            --region "$RUN_REGION" \
-            --image "$RUN_REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$SERVICE_NAME:${{ env.VERSION }}" \
-            --set-env-vars=FIRESTORE_PROJECT_ID=$PROJECT_ID \
-            --set-env-vars=UI_SERVER_ADDRESS=$UI_SERVER_ADDRESS \
-            --platform "managed"
