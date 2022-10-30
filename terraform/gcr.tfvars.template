@@ -1,0 +1,7 @@
+project           = xx
+location_full     = "europe-north1"
+gw_location_full  = "europe-west1"
+gcloud_creds_file = "gcp-credentials.json"
+tiira_username    = xx
+tiira_password    = xx
+

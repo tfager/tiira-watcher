@@ -26,7 +26,10 @@ Cloud service to prefetch bird sightings from Tiira service and present them nic
 11. Enable Container Registry API: `gcloud services enable artifactregistry.googleapis.com`
 12. Enable email+password [authentication in Firebase](https://console.firebase.google.com/u/1/project/<project-id>/authentication/providers)
 13. Generate admin key for [Firebase Admin SDK](https://console.firebase.google.com/u/0/project/<projectid>/settings/serviceaccounts/adminsdk)
-15. Go to terraform directory of the checked out project, and `terraform init` and `terraform apply`
+14. Fill in CI terraform variables as in [template](terraform/ci/registry.tfvars.template) into `terraform/gcr.tfvars`
+15. Go to `terraform/ci` directory of the checked out project, and `terraform init` and `terraform apply -var-file=registry.tfvars`
+16. Fill in terraform variables as in [template](terraform/gcr.tfvars.template) into `terraform/gcr.tfvars`
+17. Go to terraform directory of the checked out project, and `terraform init` and `terraform apply -var-file=gcr.tfvars`
 16. 
 
 (TODO: enable APIs with `gcloud services enable cloudbuild.googleapis.com compute.googleapis.com`)

@@ -19,6 +19,11 @@ BUCKET=${PROJECT}-terraform-backend
 #    --member="serviceAccount:$TERRAFORM_SA" --role='roles/run.admin'
 #gcloud projects add-iam-policy-binding $PROJECT \
 #    --member="serviceAccount:$TERRAFORM_SA" --role="roles/artifactregistry.admin"
+#gcloud projects add-iam-policy-binding $PROJECT \
+#    --member="serviceAccount:$TERRAFORM_SA" --role="roles/datastore.indexAdmin"
+gcloud projects add-iam-policy-binding $PROJECT \
+    --member="serviceAccount:$TERRAFORM_SA" --role="roles/datastore.owner"
+
 
 # Storage bucket for terraform backend
 #gcloud storage buckets create gs://${BUCKET} \

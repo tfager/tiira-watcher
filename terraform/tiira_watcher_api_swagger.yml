@@ -56,4 +56,4 @@ paths:
         '200':
           description: Success
       x-google-backend:
-        address: "${api_endpoint}search"
+        address: "${api_endpoint}/search"

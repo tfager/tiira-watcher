@@ -36,11 +36,6 @@ resource "google_api_gateway_gateway" "api_gw" {
   api_config = google_api_gateway_api_config.api_cfg.id
   gateway_id = "api-gw"
   region     = var.gw_location_full
-  lifecycle {
-    ignore_changes = [
-      api_config
-    ]
-  }
 }
 
 output "apigw_endpoint" {

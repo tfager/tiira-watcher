@@ -27,14 +27,6 @@ variable "gw_location_full" {
   type = string
 }
 
-variable "server_version" {
-  type = string
-}
-
-variable "ui_version" {
-  type = string
-}
-
 variable "tiira_password" {
   type      = string
   sensitive = true

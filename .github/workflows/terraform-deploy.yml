@@ -1,0 +1,53 @@
+name: "Terraform deployment to GCP"
+
+on:
+  workflow_dispatch:
+    inputs:
+      ui_version:
+        type: string
+        description: UI version tagged into GCP artifact registry
+        required: true
+      server_version:
+        type: string
+        description: Server version tagged into GCP artifact registry
+        required: true
+
+jobs:
+  terraform-apply:
+    name: "Terraform apply job"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Bring GCP service account key from github secrets
+        working-directory: ./terraform
+        run: 'echo "$GCP_KEY" > gcp-credentials.json'
+        env:
+          GCP_KEY: ${{secrets.GCR_SA_KEY}}
+
+      - name: Bring terraform vars from github secrets
+        working-directory: ./terraform
+        run: 'echo "$VARS" > gcr.tfvars'
+        env:
+          GCP_KEY: ${{secrets.TERRAFORM_VARS}}
+
+      - name: Write version files
+        working-directory: ./terraform
+        run: |
+          echo "${{ github.event.inputs.ui_version }}" > ui_version.txt
+          echo "${{ github.event.inputs.server_version }}" > server_version.txt
+        env:
+          GCP_KEY: ${{secrets.TERRAFORM_VARS}}
+
+      - name: Terraform init
+        working-directory: ./terraform
+        run: terraform init -reconfigure
+
+      - name: Terraform apply
+        working-directory: ./terraform
+        run: terraform apply -input=false -auto-approve -var-file=gcr.tfvars

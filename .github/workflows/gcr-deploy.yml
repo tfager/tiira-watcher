@@ -76,7 +76,7 @@ jobs:
 
       - name: Setup GCloud Auth
         id: auth
-        uses: google-github-actions/auth@v0.4.0
+        uses: google-github-actions/auth@v0
         with:
           credentials_json: ${{ secrets.GCR_SA_KEY }}
 
@@ -85,6 +85,11 @@ jobs:
 
       - name: Set version
         run: echo "VERSION=$(head -1 project.clj | cut -d " " -f 3 | sed -e 's/"//g')" | tee -a $GITHUB_ENV
+
+      - name: Store version file
+        run: |
+          echo $VERSION > server_version.txt
+          gcloud cp server_version.txt gs://${{ PROJECT_ID }}-terraform-backend/app_versions/
 
       - name: Rename jar file
         run: mv docker/target/tiira-watcher-${{ env.VERSION }}-standalone.jar docker/target/tiira-watcher.jar
