@@ -89,7 +89,7 @@ jobs:
       - name: Store version file
         run: |
           echo $VERSION > server_version.txt
-          gcloud cp server_version.txt gs://${{ PROJECT_ID }}-terraform-backend/app_versions/
+          gcloud cp server_version.txt gs://${{ secrets.GCR_PROJECT }}-terraform-backend/app_versions/
 
       - name: Rename jar file
         run: mv docker/target/tiira-watcher-${{ env.VERSION }}-standalone.jar docker/target/tiira-watcher.jar

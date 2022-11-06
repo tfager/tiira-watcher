@@ -34,15 +34,13 @@ jobs:
         working-directory: ./terraform
         run: 'echo "$VARS" > gcr.tfvars'
         env:
-          GCP_KEY: ${{secrets.TERRAFORM_VARS}}
+          VARS: ${{secrets.TERRAFORM_VARS}}
 
       - name: Write version files
         working-directory: ./terraform
         run: |
           echo "${{ github.event.inputs.ui_version }}" > ui_version.txt
           echo "${{ github.event.inputs.server_version }}" > server_version.txt
-        env:
-          GCP_KEY: ${{secrets.TERRAFORM_VARS}}
 
       - name: Terraform init
         working-directory: ./terraform
