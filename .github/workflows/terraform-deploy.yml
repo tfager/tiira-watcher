@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@main
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -45,7 +45,11 @@ jobs:
       - name: Terraform init
         working-directory: ./terraform
         run: terraform init -reconfigure
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: "./gcp-credentials.json"
 
       - name: Terraform apply
         working-directory: ./terraform
         run: terraform apply -input=false -auto-approve -var-file=gcr.tfvars
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: "./gcp-credentials.json"
