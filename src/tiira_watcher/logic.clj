@@ -2,7 +2,9 @@
   (:require  [tiira-watcher.tiira :as tiira]
              [tiira-watcher.firestore :as store]
              [environ.core :refer [env]]
-  ))
+             [taoensso.timbre :refer [info]]
+             [clj-time.coerce :as cc]
+             ))
 
 (def areas {
             :tikkurila   {:miny 6684066.0, :minx 389806.0
@@ -71,15 +73,25 @@
     ))
 
 (defn tiira-search-and-store [db area]
-  (println "Searching " area)
+  (info "Searching " area)
   (when-not (contains? env :tiira-username) (throw (IllegalStateException. "Missing environment variable TIIRA_USERNAME")))
   (when-not (contains? env :tiira-password) (throw (IllegalStateException. "Missing environment variable TIIRA_PASSWORD")))
   (let [username (:tiira-username env)
         password (:tiira-password env)
         enriched (tiira-search username password area)]
     (doseq [s enriched]
-      (println (:species s) " " (:date s) " " (:time s) " "
+      (info (:species s) " " (:date s) " " (:time s) " "
                (:osm-url s) " " (:loc-name s) " " (:extra s))
       (store/write-sighting db s))
-    (println "Stored " (count enriched) " sightings")
+    (info "Stored " (count enriched) " sightings")
     ))
+
+(defn tiira-process-search-requests [db]
+  (doseq [s-req (store/read-search-requests db)]
+    (info "Processing search request " (:id s-req)
+          ", timestamp " (cc/from-long (:timestamp s-req))
+          ", user " (:username s-req)
+          ", area " (:area s-req))
+    ;; Delete first to avoid infinite loop if something goes wrong
+    (store/delete-search-request db (:id s-req))
+    (tiira-search-and-store db (:area s-req))))

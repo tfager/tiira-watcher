@@ -42,3 +42,15 @@
   {:pre [(s/valid? :tiira/search-req-complete search-request)]}
   (-> (fs/doc (fs/coll db search-requests-index) (str (:id search-request)))
       (fs/set! (cske/transform-keys csk/->kebab-case-string search-request))))
+
+(defn read-search-requests [db]
+  {:post [(s/valid? (s/coll-of :tiira/search-req-complete) %)]}
+  (map
+    #(cske/transform-keys csk/->kebab-case-keyword %)
+    (-> (fs/coll db search-requests-index)
+        (fs/order-by "timestamp" :asc)
+        fs/pullv)
+    ))
+
+(defn delete-search-request [db search-request-id]
+  (fs/delete! (fs/doc (fs/coll db search-requests-index) search-request-id)))

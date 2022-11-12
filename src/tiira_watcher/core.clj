@@ -50,7 +50,8 @@
   (let [clean-upto (ct/minus (ct/now) (ct/days 7))
         db (store/connect-db)]
   (case command
-    "search"    (logic/tiira-search-and-store db (first rest))
-    "clean"     (store/clean-sightings db (inst-ms clean-upto))
-    "server"    (server/-main)
+    "search"       (logic/tiira-search-and-store db (first rest))
+    "clean"        (store/clean-sightings db (inst-ms clean-upto))
+    "search-reqs"  (logic/tiira-process-search-requests db)
+    "server"       (server/-main)
     )))
