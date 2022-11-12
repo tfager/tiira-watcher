@@ -64,5 +64,19 @@ resource "google_firestore_index" "sightings_index" {
     field_path = "timestamp"
     order      = "DESCENDING"
   }
+}
 
+resource "google_firestore_index" "search_request_index" {
+  project    = var.project
+  collection = "search_request"
+
+  fields {
+    field_path = "id"
+    order      = "DESCENDING"
+  }
+
+  fields {
+    field_path = "timestamp"
+    order      = "ASCENDING"
+  }
 }

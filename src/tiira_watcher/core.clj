@@ -1,9 +1,9 @@
-(ns tiira-watcher.main
+(ns tiira-watcher.core
   (:require [tiira-watcher.firestore :as store]
             [tiira-watcher.server :as server]
             [tiira-watcher.logic :as logic]
             [geo-conversion.core :as geo]
-            [java-time :as jt]
+            [clj-time.core :as ct]
             )
   (:import (java.util Date))
   (:gen-class))
@@ -47,7 +47,7 @@
                     (:extra s) " " (:date s) " " (:time s) "');")))))
 
 (defn -main [command & rest]
-  (let [clean-upto (jt/minus (jt/instant) (jt/days 7))
+  (let [clean-upto (ct/minus (ct/now) (ct/days 7))
         db (store/connect-db)]
   (case command
     "search"    (logic/tiira-search-and-store db (first rest))

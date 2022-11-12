@@ -4,9 +4,12 @@
     [camel-snake-kebab.core :as csk]
     [camel-snake-kebab.extras :as cske]
     [environ.core :refer [env]]
+    [clojure.spec.alpha :as s]
     ))
 
 (def sightings-index "sightings")
+(def search-requests-index "search_requests")
+
 (defn connect-db []
   (defonce db-conn
            (if (contains? env :firestore-credentials-file)
@@ -34,3 +37,8 @@
 (defn clean-sightings [db end-timestamp]
   (fs/delete-all! (-> (fs/coll db sightings-index)
                       (fs/filter<= "timestamp" end-timestamp))))
+
+(defn write-search-request [db search-request]
+  {:pre [(s/valid? :tiira/search-req-complete search-request)]}
+  (-> (fs/doc (fs/coll db search-requests-index) (str (:id search-request)))
+      (fs/set! (cske/transform-keys csk/->kebab-case-string search-request))))

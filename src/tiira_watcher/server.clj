@@ -3,7 +3,6 @@
             [compojure.route :as route]
             [tiira-watcher.firestore :as store]
             [tiira-watcher.tiira :as tiira]
-            [tiira-watcher.logic :as logic]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.json :as rjson]
             [ring.util.response :as resp]
@@ -14,6 +13,7 @@
             [clj-time.coerce :as cc]
             [environ.core :refer [env]]
             [clojure.spec.alpha :as s]
+            [taoensso.timbre :refer [info]]
             )
   (:gen-class)
   )
@@ -34,20 +34,34 @@
     ))
 
 (s/def :tiira/area string?)
+(s/def :tiira/username string?)
+(s/def :tiira/id string?)
+(s/def :tiira/timestamp number?)
 (s/def :tiira/search-req (s/keys :req-un [:tiira/area]))
+(s/def :tiira/search-req-complete (s/keys :req-un [:tiira/id :tiira/timestamp :tiira/area :tiira/username]))
 
-
+(defn enrich-search-request [search-request]
+  {:pre [(s/valid? :tiira/search-req search-request)]
+   :post [(s/valid? :tiira/search-req-complete %)]}
+  (assoc search-request
+    :id (str (random-uuid))
+    :timestamp (cc/to-long (ct/now))
+    :username  "TODO"
+    )
+  )
 (defn search-sightings [request]
   (if-not (= "application/json" (get-in request [:headers "content-type"]))
     (resp/bad-request "Only encoding application/json accepted")
     (if-not (s/valid? :tiira/search-req (:body request))
       (resp/bad-request (str "Invalid body: " (s/explain-str :tiira/search-req (:body request))))
-      (let [area (get-in request [:body :area])
-            db   (store/connect-db)
-            ]
-        (println "Starting search: " area)
-        (logic/tiira-search-and-store db area)
-        (resp/response { :status :finished })
+      (let [search-request (:body request)
+            ;; TODO: Get username from headers?
+            ;; TODO: Why is lein repl failing (symbol "create") ??
+            search-request (enrich-search-request search-request)
+            db   (store/connect-db)]
+        (info "Storing search request: " search-request)
+        (store/write-search-request db search-request)
+        (resp/response { :status :finished :id (:id search-request)})
         ))))
 
 
@@ -56,6 +70,8 @@
            (POST "/search" [] search-sightings)
            (route/not-found "<h1>Page not found</h1>"))
 
+;; TODO: header X-Apigateway-Api-Userinfo has Base64 encoded JWT payload
+;; Ref. https://cloud.google.com/api-gateway/docs/authenticating-users-firebase
 (def app
   (-> api-routes
       (rcors/wrap-cors :access-control-allow-origin [ui-server-address-regex]

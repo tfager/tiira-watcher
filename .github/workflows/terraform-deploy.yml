@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@main
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@main
 
       - name: Bring GCP service account key from github secrets
         working-directory: ./terraform
