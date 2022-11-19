@@ -9,6 +9,15 @@ REGION=europe-north1
 PROJECT=tiira-watcher-dev
 BUCKET=${PROJECT}-terraform-backend
 
+# Enable GCP Services
+gcloud services enable cloudbuild.googleapis.com \
+    eventarc.googleapis.com \
+    logging.googleapis.com \
+    pubsub.googleapis.com \
+    run.googleapis.com \
+    workflows.googleapis.com \
+    cloudfunctions.googleapis.com
+
 # SA creation - untested
 #gcloud iam service-accounts keys create gha-gcloud-sa.json --iam-account=$TERRAFORM_SA
 # TODO: write to file etc.
@@ -21,8 +30,8 @@ BUCKET=${PROJECT}-terraform-backend
 #    --member="serviceAccount:$TERRAFORM_SA" --role="roles/artifactregistry.admin"
 #gcloud projects add-iam-policy-binding $PROJECT \
 #    --member="serviceAccount:$TERRAFORM_SA" --role="roles/datastore.indexAdmin"
-gcloud projects add-iam-policy-binding $PROJECT \
-    --member="serviceAccount:$TERRAFORM_SA" --role="roles/datastore.owner"
+#gcloud projects add-iam-policy-binding $PROJECT \
+#    --member="serviceAccount:$TERRAFORM_SA" --role="roles/datastore.owner"
 
 
 # Storage bucket for terraform backend

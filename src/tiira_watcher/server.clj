@@ -55,8 +55,6 @@
     (if-not (s/valid? :tiira/search-req (:body request))
       (resp/bad-request (str "Invalid body: " (s/explain-str :tiira/search-req (:body request))))
       (let [search-request (:body request)
-            ;; TODO: Get username from headers?
-            ;; TODO: Why is lein repl failing (symbol "create") ??
             search-request (enrich-search-request search-request)
             db   (store/connect-db)]
         (info "Storing search request: " search-request)
