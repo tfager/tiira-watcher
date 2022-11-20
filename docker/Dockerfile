@@ -15,6 +15,6 @@ VOLUME /config
 
 EXPOSE 8080
 
-# Arguments: username, jarfile, app dir
-ENTRYPOINT java -jar /app/tiira-watcher.jar
-
+ENTRYPOINT ["java", "-jar", "/app/tiira-watcher.jar"]
+# Default argument, overrideable
+CMD ["server"]
