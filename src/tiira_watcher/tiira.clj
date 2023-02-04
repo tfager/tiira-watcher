@@ -90,6 +90,7 @@
    }
   )
 
+; TODO: Timestamp is set to midnight EST, which is on previous day UTC, and search seems to work with UTC..
 (defn -add-timestamp [sighting]
   (assoc sighting
     :timestamp

@@ -5,6 +5,8 @@
             [tiira-watcher.tiira :as tiira]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.json :as rjson]
+            [ring.middleware.params :as rparams]
+            [ring.middleware.keyword-params :as kparams]
             [ring.util.response :as resp]
             [ring.middleware.cors :as rcors]
             [camel-snake-kebab.core :as csk]
@@ -23,8 +25,9 @@
   (ct/date-time (ct/year the-date) (ct/month the-date) (ct/day the-date)))
 
 (defn get-sightings [request]
-  (let [days-before (get request :daysBefore 1)
+  (let [days-before (read-string (get-in request [:params :daysBefore] "1"))
         start-timestamp (start-of-day (ct/minus (ct/now) (ct/days days-before)))
+        _ (info "Get-sightings: days-before = " days-before ", start-timestamp = " start-timestamp)
         db (store/connect-db)]
     (resp/response
       {:sightingGroups
@@ -74,6 +77,8 @@
   (-> api-routes
       (rcors/wrap-cors :access-control-allow-origin [ui-server-address-regex]
                        :access-control-allow-methods [:get :post])
+      (kparams/wrap-keyword-params)
+      (rparams/wrap-params)
       (rjson/wrap-json-response)
       (rjson/wrap-json-body { :keywords? true })
       ))
