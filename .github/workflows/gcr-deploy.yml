@@ -62,7 +62,10 @@ jobs:
   store-srt:
     name: Save search-request-trigger into gcs
     runs-on: ubuntu-latest
-    working-directory: search-request-trigger
+    defaults:
+      run:
+        working-directory: search-request-trigger
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
