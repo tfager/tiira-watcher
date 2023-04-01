@@ -16,7 +16,8 @@ gcloud services enable cloudbuild.googleapis.com \
     pubsub.googleapis.com \
     run.googleapis.com \
     workflows.googleapis.com \
-    cloudfunctions.googleapis.com
+    cloudfunctions.googleapis.com \
+    secretmanager.googleapis.com
 
 # SA creation - untested
 #gcloud iam service-accounts keys create gha-gcloud-sa.json --iam-account=$TERRAFORM_SA
@@ -32,6 +33,10 @@ gcloud services enable cloudbuild.googleapis.com \
 #    --member="serviceAccount:$TERRAFORM_SA" --role="roles/datastore.indexAdmin"
 #gcloud projects add-iam-policy-binding $PROJECT \
 #    --member="serviceAccount:$TERRAFORM_SA" --role="roles/datastore.owner"
+#gcloud projects add-iam-policy-binding $PROJECT \
+#    --member="serviceAccount:$TERRAFORM_SA" --role="roles/secretmanager.secretAccessor"
+gcloud projects add-iam-policy-binding $PROJECT \
+    --member="serviceAccount:$TERRAFORM_SA" --role="roles/secretmanager.admin"
 
 
 # Storage bucket for terraform backend

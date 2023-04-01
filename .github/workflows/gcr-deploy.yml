@@ -53,11 +53,42 @@ jobs:
       - name: Set version
         run: echo "VERSION=$(head -1 project.clj | cut -d " " -f 3 | sed -e 's/"//g')" | tee -a $GITHUB_ENV
 
-      - name: Archive Production Artifact
+      - name: Archive Artifact
         uses: actions/upload-artifact@main
         with:
           name: jar
           path: target/tiira-watcher-${{ env.VERSION }}-standalone.jar
+
+  store-srt:
+    name: Save search-request-trigger into gcs
+    runs-on: ubuntu-latest
+    working-directory: search-request-trigger
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup GCloud Auth
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GCR_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.2.1
+
+      - name: Set version
+        run: echo "VERSION=$(grep version package.json | cut -d "\"" -f 4)" | tee -a $GITHUB_ENV
+
+      - name: Store version file
+        run: |
+          echo $VERSION > srt_version.txt
+          gcloud storage cp srt_version.txt gs://${{ secrets.GCR_PROJECT }}-terraform-backend/app_versions/
+
+      - name: Store sources
+        run: |
+          zip -r search-request-trigger.zip package.json src/
+          gcloud storage cp search-request-trigger.zip gs://${{ secrets.GCR_PROJECT }}-terraform-backend/search-request-trigger/
+
 
   deploy-gcr:
     name: Deploy to GCR
