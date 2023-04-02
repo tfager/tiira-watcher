@@ -22,3 +22,5 @@ tiira-watcher-dev*.json
 .lein-env
 .terraform*
 .pw.txt
+/search-request-trigger/node_modules
+/search-request-trigger/package-lock.json

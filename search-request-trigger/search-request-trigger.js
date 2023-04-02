@@ -52,7 +52,8 @@ exports.searchRequestWriteTrigger = (event, context) => {
   console.log(JSON.stringify(context));
   const url = `https://${location}-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/${project}/jobs/${job}:run`;
 
-  const accessToken = getAccessToken();
-  const res = runSearchJob(accessToken);
-  return res;
+  getAccessToken().then( (accessToken) => {
+    const res = runSearchJob(accessToken);
+    return res;
+  });
 };
