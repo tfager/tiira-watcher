@@ -35,8 +35,10 @@ gcloud services enable cloudbuild.googleapis.com \
 #    --member="serviceAccount:$TERRAFORM_SA" --role="roles/datastore.owner"
 #gcloud projects add-iam-policy-binding $PROJECT \
 #    --member="serviceAccount:$TERRAFORM_SA" --role="roles/secretmanager.secretAccessor"
+#gcloud projects add-iam-policy-binding $PROJECT \
+#    --member="serviceAccount:$TERRAFORM_SA" --role="roles/secretmanager.admin"
 gcloud projects add-iam-policy-binding $PROJECT \
-    --member="serviceAccount:$TERRAFORM_SA" --role="roles/secretmanager.admin"
+    --member="serviceAccount:$TERRAFORM_SA" --role="roles/cloudfunctions.admin"
 
 
 # Storage bucket for terraform backend

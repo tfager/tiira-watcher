@@ -1,7 +1,9 @@
 {
   "name": "search-request-trigger",
+  "main": "search-request-trigger.js",
   "version": "1.0.0",
   "dependencies": {
+    "@google-cloud/functions-framework": "^3.0.0",
     "axios": "^0.21.1",
     "google-auth-library": "^8.7.0"
   }

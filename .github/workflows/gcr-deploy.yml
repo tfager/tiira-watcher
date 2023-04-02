@@ -89,7 +89,7 @@ jobs:
 
       - name: Store sources
         run: |
-          zip -r search-request-trigger.zip package.json src/
+          zip -r search-request-trigger.zip package.json *.js
           gcloud storage cp search-request-trigger.zip gs://${{ secrets.GCR_PROJECT }}-terraform-backend/search-request-trigger/
 
 
