@@ -25,6 +25,8 @@
                           :maxy 6693623.0, :maxx 404202.0}
             :pori        {:miny 6805114.0, :minx 194371.0
                           :maxy 6853794.0, :maxx 241744.0}
+            :uto         {:miny 6634978.0, :minx 178117.0
+                          :maxy 6647393.0, :maxx 191512.0}
             })
 
 (def blacklist #{"Harmaahaikara"

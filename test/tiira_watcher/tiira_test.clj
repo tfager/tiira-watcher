@@ -1,7 +1,7 @@
 (ns tiira-watcher.tiira-test
   (:require [clojure.test :refer :all]
             [stub-http.core :as stub]
-            [tiira_watcher.tiira :as tiira]
+            [tiira-watcher.tiira :as tiira]
             [clojure.java.io :as io]
             [clojure.string :as str]
             ))
