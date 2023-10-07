@@ -27,6 +27,8 @@
                           :maxy 6853794.0, :maxx 241744.0}
             :uto         {:miny 6634978.0, :minx 178117.0
                           :maxy 6647393.0, :maxx 191512.0}
+            :virolahti   {:miny 6676389.0, :minx 424050.0
+                          :maxy 6729970.0, :maxx 555389.0}
             })
 
 (def blacklist #{"Harmaahaikara"

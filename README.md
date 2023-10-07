@@ -41,6 +41,13 @@ Cloud service to prefetch bird sightings from Tiira service and present them nic
 2. Add secret GCR_PROJECT (value is project ID)
 3. Add secret GCR_SA_KEY (value is the entire JSON from step 1)
 
+## Development
+
+1. Make changes & test locally
+2. Update version number in project.clj
+3. Upon commit & push, GHA will build new docker image with given version, and update the version number into GCS
+4. When running terraform-deploy GHA job (manually so far), it will take the image with saved version number
+
 ## Notes
 
 For local docker push, do:

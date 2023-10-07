@@ -1,21 +1,45 @@
+resource "google_cloud_run_v2_job" "search_job" {
+  name     = "tiira-watcher-search-job"
+  location = var.location_full
+
+  template {
+    template {
+      timeout = "1200s"  # 20 minutes
+      containers {
+        image = "${var.location_full}-docker.pkg.dev/${var.project}/tiira-watcher-repo/tiira-watcher:${local.server_version}"
+        args = ["search-reqs"]
+        env {
+          name = "FIRESTORE_PROJECT_ID"
+          value = var.project
+        }
+        env {
+          name = "TIIRA_USERNAME"
+          value = var.tiira_username
+        }
+        env {
+          name = "TIIRA_PASSWORD"
+          value = var.tiira_password
+        }
+      }
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      launch_stage,
+    ]
+  }
+}
+
 resource "google_service_account" "service_account_trigger" {
   account_id   = "trigger-sa"
   display_name = "Cloud Run to Pub/Sub Trigger Service Account"
 }
 
-# TODO: Delete old, create with this: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloud_run_v2_job
 resource "google_project_iam_member" "trigger_sa_pub_sub" {
   provider = google-beta
   project  = var.project
   role     = "roles/pubsub.publisher"
-  member   = "serviceAccount:${google_service_account.service_account_trigger.email}"
-}
-
-# TODO: Maybe not needed?
-resource "google_project_iam_member" "trigger_sa_event_receiver" {
-  provider = google-beta
-  project  = var.project
-  role     = "roles/eventarc.eventReceiver"
   member   = "serviceAccount:${google_service_account.service_account_trigger.email}"
 }
 
@@ -53,8 +77,7 @@ data "google_iam_policy" "trigger_sa_invoke_right_policy" {
 
 resource "google_cloud_run_v2_job_iam_policy" "trigger_sa_invoke_right" {
   location = var.location_full
-  # TODO get properly
-  name = "tiira-watcher-search-job"
+  name = google_cloud_run_v2_job.search_job.name
   project = var.project
   policy_data = data.google_iam_policy.trigger_sa_invoke_right_policy.policy_data
 }
@@ -79,8 +102,7 @@ resource "google_cloudfunctions_function" "search_request_trigger" {
   environment_variables = {
     PROJECT = var.project
     LOCATION = var.location_full
-    # TODO Get properly
-    SEARCH_JOB = "tiira-watcher-search-job"
+    SEARCH_JOB = google_cloud_run_v2_job.search_job.name
     SECRET_NAME = google_secret_manager_secret.trigger_json_key_secret.secret_id
   }
 
