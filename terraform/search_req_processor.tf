@@ -50,7 +50,7 @@ resource "google_service_account_key" "trigger_sa_key" {
 resource "google_secret_manager_secret" "trigger_json_key_secret" {
   secret_id = "trigger-sa-json-key-secret"
   replication {
-    automatic = true
+    auto {}
   }
 }
 
