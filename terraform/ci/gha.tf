@@ -4,37 +4,18 @@ resource "google_service_account" "github_sa" {
   display_name = "Github Actions Service Account"
 }
 
-resource "google_project_iam_member" "github_sa_cloud_run_admin" {
+resource "google_project_iam_member" "github_sa_roles" {
+  for_each = toset([
+    "roles/run.admin",
+    "roles/secretmanager.secretAccessor",
+    "roles/cloudbuild.builds.editor",
+    "roles/cloudbuild.builds.builder",
+    "roles/viewer",
+    "roles/iam.serviceAccountUser",
+    "roles/cloudfunctions.developer"
+  ])
+  role = each.key
   provider = google-beta
   project  = var.project
-  role     = "roles/run.admin"
-  member   = "serviceAccount:${google_service_account.github_sa.email}"
-}
-
-resource "google_project_iam_member" "github_sa_cloud_build_editor" {
-  provider = google-beta
-  project  = var.project
-  role     = "roles/cloudbuild.builds.editor"
-  member   = "serviceAccount:${google_service_account.github_sa.email}"
-}
-
-resource "google_project_iam_member" "github_sa_cloud_build_builder" {
-  provider = google-beta
-  project  = var.project
-  role     = "roles/cloudbuild.builds.builder"
-  member   = "serviceAccount:${google_service_account.github_sa.email}"
-}
-
-resource "google_project_iam_member" "github_sa_viewer" {
-  provider = google-beta
-  project  = var.project
-  role     = "roles/viewer"
-  member   = "serviceAccount:${google_service_account.github_sa.email}"
-}
-
-resource "google_project_iam_member" "github_sa_sa_user" {
-  provider = google-beta
-  project  = var.project
-  role     = "roles/iam.serviceAccountUser"
   member   = "serviceAccount:${google_service_account.github_sa.email}"
 }

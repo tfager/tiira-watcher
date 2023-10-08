@@ -4,6 +4,7 @@
             [tiira-watcher.logic :as logic]
             [geo-conversion.core :as geo]
             [clj-time.core :as ct]
+            [taoensso.timbre :as log]
             )
   (:import (java.util Date))
   (:gen-class))
@@ -47,6 +48,7 @@
                     (:extra s) " " (:date s) " " (:time s) "');")))))
 
 (defn -main [command & rest]
+  (log/set-min-level! :info)
   (let [clean-upto (ct/minus (ct/now) (ct/days 7))
         db (store/connect-db)]
   (case command

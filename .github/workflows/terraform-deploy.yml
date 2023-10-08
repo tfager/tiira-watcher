@@ -2,15 +2,6 @@ name: "Terraform deployment to GCP"
 
 on:
   workflow_dispatch:
-    inputs:
-      ui_version:
-        type: string
-        description: UI version tagged into GCP artifact registry
-        required: true
-      server_version:
-        type: string
-        description: Server version tagged into GCP artifact registry
-        required: true
 
 jobs:
   terraform-apply:
@@ -24,6 +15,22 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@main
 
+      - name: Setup GCloud Auth
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GCR_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Get last built version files
+        run: |
+          gcloud storage cp gs://${{ secrets.GCR_PROJECT }}-terraform-backend/app_versions/server_version.txt terraform/
+          gcloud storage cp gs://${{ secrets.GCR_PROJECT }}-terraform-backend/app_versions/ui_version.txt terraform/
+          echo "Server version: $(cat terraform/server_version.txt)"
+          echo "UI version: $(cat terraform/ui_version.txt)"
+
       - name: Bring GCP service account key from github secrets
         working-directory: ./terraform
         run: 'echo "$GCP_KEY" > gcp-credentials.json'
@@ -35,12 +42,6 @@ jobs:
         run: 'echo "$VARS" > gcr.tfvars'
         env:
           VARS: ${{secrets.TERRAFORM_VARS}}
-
-      - name: Write version files
-        working-directory: ./terraform
-        run: |
-          echo "${{ github.event.inputs.ui_version }}" > ui_version.txt
-          echo "${{ github.event.inputs.server_version }}" > server_version.txt
 
       - name: Terraform init
         working-directory: ./terraform
