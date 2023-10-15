@@ -35,6 +35,11 @@ variable "tiira_password" {
 variable "tiira_username" {
   type = string
 }
+
+variable "ui_server_cors" {
+  type = string
+}
+
 provider "google" {
   credentials = file(var.gcloud_creds_file)
 

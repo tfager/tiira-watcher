@@ -33,3 +33,7 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
 
   policy_data = data.google_iam_policy.noauth.policy_data
 }
+
+output "ui_url" {
+  value = google_cloud_run_service.ui.status[0].url
+}

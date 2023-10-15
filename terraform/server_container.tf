@@ -22,8 +22,7 @@ resource "google_cloud_run_service" "tiira_watcher_api" {
         }
         env {
           name  = "UI_SERVER_ADDRESS"
-          value = "https://tiira-watcher-ui-vodgsvsqja-lz.a.run.app"
-          # TODO: From TF outputs
+          value = var.ui_server_cors
         }
         env {
           name  = "TIIRA_USERNAME"
@@ -38,7 +37,7 @@ resource "google_cloud_run_service" "tiira_watcher_api" {
   }
 }
 
-output "cloudrun_endpoint" {
+output "api_url" {
   value = google_cloud_run_service.tiira_watcher_api.status[0].url
 }
 

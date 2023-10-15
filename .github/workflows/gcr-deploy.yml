@@ -10,7 +10,6 @@ env:
   RUN_REGION: europe-north1
   SERVICE_NAME: tiira-watcher
   REPO_NAME: tiira-watcher-repo
-  UI_SERVER_ADDRESS: ${{ secrets.UI_SERVER_ADDRESS }}
 
 jobs:
   build:
