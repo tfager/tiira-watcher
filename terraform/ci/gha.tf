@@ -10,7 +10,8 @@ resource "google_project_iam_member" "github_sa_roles" {
     "roles/secretmanager.secretAccessor",
     "roles/viewer",
     "roles/iam.serviceAccountUser",
-    "roles/cloudfunctions.developer"
+    "roles/cloudfunctions.developer",
+    "roles/storage.objectUser"
   ])
   role = each.key
   provider = google-beta
