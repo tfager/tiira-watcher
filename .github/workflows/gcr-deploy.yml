@@ -139,5 +139,5 @@ jobs:
         with:
           push: true
           context: ./docker
-          tags: "$RUN_REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$SERVICE_NAME:${{ env.VERSION }}"
+          tags: "${{ env.RUN_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.SERVICE_NAME }}:${{ env.VERSION }}"
 
