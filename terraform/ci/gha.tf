@@ -8,8 +8,6 @@ resource "google_project_iam_member" "github_sa_roles" {
   for_each = toset([
     "roles/run.admin",
     "roles/secretmanager.secretAccessor",
-    "roles/cloudbuild.builds.editor",
-    "roles/cloudbuild.builds.builder",
     "roles/viewer",
     "roles/iam.serviceAccountUser",
     "roles/cloudfunctions.developer"
