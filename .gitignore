@@ -15,6 +15,7 @@ pom.xml.asc
 .nrepl-port
 .cpcache/
 /terraform/gcp-*.json
+/terraform/tiira*.json
 /terraform/ci/*-sa.json
 /terraform/server_version.txt
 /terraform/ui_version.txt

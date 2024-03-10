@@ -1,9 +1,18 @@
-name: Google Cloud Run Deploy
+name: Build and push to artifact registry
 # https://github.com/google-github-actions/setup-gcloud
+
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: environment to deploy to
+        required: true
+    secrets:
+      GCR_PROJECT:
+        required: true
+      GCR_SA_KEY:
+        required: true
 
 env:
   PROJECT_ID: ${{ secrets.GCR_PROJECT }}
@@ -15,6 +24,7 @@ jobs:
   build:
     name: Build tiira-watcher with leiningen
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
 
     steps:
       - name: Checkout
@@ -61,6 +71,7 @@ jobs:
   store-srt:
     name: Save search-request-trigger into gcs
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     defaults:
       run:
         working-directory: search-request-trigger
@@ -96,6 +107,7 @@ jobs:
     name: Deploy to GCR
     needs: build
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
 
     steps:
       - name: Checkout Repo

@@ -1,0 +1,13 @@
+name: Build and push to development
+on:
+    pull_request:
+        branches-ignore:
+            - main
+jobs:
+    build:
+        uses: ./.github/workflows/gcr-build.yml
+        with:
+            environment: dev
+        secrets:
+            GCR_PROJECT: ${secrets.GCR_PROJECT}
+            GCR_SA_KEY: ${secrets.GCR_SA_KEY}
