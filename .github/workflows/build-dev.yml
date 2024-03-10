@@ -9,5 +9,5 @@ jobs:
         with:
             environment: dev
         secrets:
-            GCR_PROJECT: ${secrets.GCR_PROJECT}
-            GCR_SA_KEY: ${secrets.GCR_SA_KEY}
+            GCR_PROJECT: ${{ secrets.GCR_PROJECT }}
+            GCR_SA_KEY: ${{ secrets.GCR_SA_KEY }}
