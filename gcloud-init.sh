@@ -4,10 +4,23 @@
 
 # TODO: vars from JSON or somewhere
 #  - see https://learn.hashicorp.com/tutorials/terraform/google-cloud-platform-build?in=terraform/gcp-get-started
-TERRAFORM_SA=terraform-account@tiira-watcher-dev.iam.gserviceaccount.com
+TERRAFORM_SA_SHORT=terraform-account
+TERRAFORM_SA=$TERRAFORM_SA_SHORT@tiira-watcher-dev.iam.gserviceaccount.com
 REGION=europe-north1
-PROJECT=tiira-watcher-dev
+if [ $1 == "production" ]
+then
+    PROJECT=tiira-watcher-prod
+else
+    PROJECT=tiira-watcher-dev
+fi
+TERRAFORM_SA_SECRETS_FILE=${PROJECT}-sa.json
 BUCKET=${PROJECT}-terraform-backend
+
+echo "Project = $PROJECT"
+
+# Create terraform SA
+gcloud iam service-accounts --project $PROJECT create "$TERRAFORM_SA_SHORT" --display-name="Terraform Service Account"
+gcloud iam service-accounts --project $PROJECT keys create $TERRAFORM_SA_SECRETS_FILE --iam-account=$TERRAFORM_SA
 
 # Enable GCP Services
 gcloud services enable cloudbuild.googleapis.com \
@@ -19,31 +32,27 @@ gcloud services enable cloudbuild.googleapis.com \
     cloudfunctions.googleapis.com \
     secretmanager.googleapis.com
 
-# SA creation - untested
-#gcloud iam service-accounts keys create gha-gcloud-sa.json --iam-account=$TERRAFORM_SA
-# TODO: write to file etc.
+ROLES=(
+    roles/resourcemanager.projectIamAdmin
+    roles/run.admin
+    roles/artifactregistry.admin
+    roles/datastore.indexAdmin
+    roles/datastore.owner
+    roles/secretmanager.secretAccessor
+    roles/secretmanager.admin
+    roles/cloudfunctions.admin
+    )
 
-#gcloud projects add-iam-policy-binding $PROJECT \
-#    --member="serviceAccount:$TERRAFORM_SA" --role="roles/resourcemanager.projectIamAdmin"
-#gcloud projects add-iam-policy-binding $PROJECT \
-#    --member="serviceAccount:$TERRAFORM_SA" --role='roles/run.admin'
-#gcloud projects add-iam-policy-binding $PROJECT \
-#    --member="serviceAccount:$TERRAFORM_SA" --role="roles/artifactregistry.admin"
-#gcloud projects add-iam-policy-binding $PROJECT \
-#    --member="serviceAccount:$TERRAFORM_SA" --role="roles/datastore.indexAdmin"
-#gcloud projects add-iam-policy-binding $PROJECT \
-#    --member="serviceAccount:$TERRAFORM_SA" --role="roles/datastore.owner"
-#gcloud projects add-iam-policy-binding $PROJECT \
-#    --member="serviceAccount:$TERRAFORM_SA" --role="roles/secretmanager.secretAccessor"
-#gcloud projects add-iam-policy-binding $PROJECT \
-#    --member="serviceAccount:$TERRAFORM_SA" --role="roles/secretmanager.admin"
-gcloud projects add-iam-policy-binding $PROJECT \
-    --member="serviceAccount:$TERRAFORM_SA" --role="roles/cloudfunctions.admin"
-
+for role in "${ROLES[@]}"
+do
+    echo "Adding $role"
+    gcloud projects add-iam-policy-binding $PROJECT \
+      --member="serviceAccount:$TERRAFORM_SA" --role="$role"
+done
 
 # Storage bucket for terraform backend
-#gcloud storage buckets create gs://${BUCKET} \
-#        --location=$REGION \
-#        --pap
-#gsutil versioning set on gs://${BUCKET}
+gcloud storage buckets create gs://${BUCKET} \
+        --location=$REGION \
+        --pap
+gsutil versioning set on gs://${BUCKET}
 
