@@ -40,8 +40,10 @@
 (s/def :tiira/username string?)
 (s/def :tiira/id string?)
 (s/def :tiira/timestamp number?)
+(s/def :tiira/search-status #{"NEW" "SEARCHING" "DONE"})
 (s/def :tiira/search-req (s/keys :req-un [:tiira/area]))
-(s/def :tiira/search-req-complete (s/keys :req-un [:tiira/id :tiira/timestamp :tiira/area :tiira/username]))
+(s/def :tiira/search-req-complete (s/keys :req-un [:tiira/id :tiira/timestamp :tiira/area :tiira/username]
+                                          :opt-un [:tiira/search-status]))
 
 (defn enrich-search-request [search-request]
   {:pre [(s/valid? :tiira/search-req search-request)]
@@ -50,6 +52,7 @@
     :id (str (random-uuid))
     :timestamp (cc/to-long (ct/now))
     :username  "TODO"
+    :search-status "NEW"
     )
   )
 (defn search-sightings [request]
@@ -65,10 +68,16 @@
         (resp/response { :status :finished :id (:id search-request)})
         ))))
 
+(defn get-search-requests [request]
+  (info "Getting search requests")
+  (let [db (store/connect-db)
+        result (store/read-search-requests db)]
+    (resp/response result)))
 
 (defroutes api-routes
            (GET "/sightings" [] get-sightings)
            (POST "/search" [] search-sightings)
+           (GET "/search" [] get-search-requests)
            (route/not-found "<h1>Page not found</h1>"))
 
 ;; TODO: header X-Apigateway-Api-Userinfo has Base64 encoded JWT payload

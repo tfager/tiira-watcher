@@ -21,6 +21,7 @@ resource "google_cloud_run_v2_job" "search_job" {
           value = var.tiira_password
         }
       }
+      service_account = google_service_account.service_account_trigger.email
     }
   }
 
@@ -90,7 +91,7 @@ resource "google_cloudfunctions_function" "search_request_trigger" {
   runtime     = "nodejs16"
   event_trigger {
     event_type = "providers/cloud.firestore/eventTypes/document.create"
-    resource   = "projects/tiira-watcher-dev/databases/(default)/documents/search_requests/{id}"
+    resource   = "projects/${var.project}/databases/(default)/documents/search_requests/{id}"
   }
   source_archive_bucket        = "${var.project}-terraform-backend"
   source_archive_object        = "search-request-trigger/search-request-trigger.zip"

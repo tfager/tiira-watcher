@@ -14,8 +14,7 @@ pom.xml.asc
 .lein-failures
 .nrepl-port
 .cpcache/
-/terraform/gcp-*.json
-/terraform/tiira*.json
+/terraform/*.json
 /terraform/ci/*-sa.json
 /terraform/server_version.txt
 /terraform/ui_version.txt
@@ -26,3 +25,5 @@ tiira-watcher-dev*.json
 .pw.txt
 /search-request-trigger/node_modules
 /search-request-trigger/package-lock.json
+/terraform/config/dev.config
+/terraform/config/prod.config

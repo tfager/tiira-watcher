@@ -19,28 +19,36 @@ BUCKET=${PROJECT}-terraform-backend
 echo "Project = $PROJECT"
 
 # Create terraform SA
-gcloud iam service-accounts --project $PROJECT create "$TERRAFORM_SA_SHORT" --display-name="Terraform Service Account"
-gcloud iam service-accounts --project $PROJECT keys create $TERRAFORM_SA_SECRETS_FILE --iam-account=$TERRAFORM_SA
+#gcloud iam service-accounts --project $PROJECT create "$TERRAFORM_SA_SHORT" --display-name="Terraform Service Account"
+#gcloud iam service-accounts --project $PROJECT keys create $TERRAFORM_SA_SECRETS_FILE --iam-account=$TERRAFORM_SA
 
 # Enable GCP Services
-gcloud services enable cloudbuild.googleapis.com \
+gcloud --project $PROJECT services enable \
+    apigateway.googleapis.com \
+    firestore.googleapis.com \
+    cloudbuild.googleapis.com \
     eventarc.googleapis.com \
     logging.googleapis.com \
     pubsub.googleapis.com \
     run.googleapis.com \
     workflows.googleapis.com \
     cloudfunctions.googleapis.com \
-    secretmanager.googleapis.com
+    secretmanager.googleapis.com \
 
 ROLES=(
-    roles/resourcemanager.projectIamAdmin
-    roles/run.admin
-    roles/artifactregistry.admin
-    roles/datastore.indexAdmin
-    roles/datastore.owner
-    roles/secretmanager.secretAccessor
-    roles/secretmanager.admin
-    roles/cloudfunctions.admin
+#    roles/resourcemanager.projectIamAdmin
+#    roles/run.admin
+#    roles/artifactregistry.admin
+#    roles/datastore.indexAdmin
+#    roles/datastore.owner
+#    roles/secretmanager.secretAccessor
+#    roles/secretmanager.admin
+#    roles/cloudfunctions.admin
+#     roles/storage.objectAdmin
+#     roles/iam.serviceAccountAdmin
+#     roles/iam.serviceAccountKeyAdmin
+#     roles/iam.serviceAccountUser
+     roles/apigateway.admin
     )
 
 for role in "${ROLES[@]}"
@@ -51,8 +59,9 @@ do
 done
 
 # Storage bucket for terraform backend
-gcloud storage buckets create gs://${BUCKET} \
-        --location=$REGION \
-        --pap
-gsutil versioning set on gs://${BUCKET}
+#gcloud storage buckets create gs://${BUCKET} \
+#        --project $PROJECT \
+#        --location=$REGION \
+#        --pap
+#gsutil versioning set on gs://${BUCKET}
 

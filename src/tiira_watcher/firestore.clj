@@ -5,6 +5,7 @@
     [camel-snake-kebab.extras :as cske]
     [environ.core :refer [env]]
     [clojure.spec.alpha :as s]
+    [taoensso.timbre :refer [info]]
     ))
 
 (def sightings-index "sightings")
@@ -45,12 +46,19 @@
 
 (defn read-search-requests [db]
   {:post [(s/valid? (s/coll-of :tiira/search-req-complete) %)]}
+  (info "Getting search requests from Firestore")
   (map
     #(cske/transform-keys csk/->kebab-case-keyword %)
     (-> (fs/coll db search-requests-index)
         (fs/order-by "timestamp" :asc)
         fs/pullv)
     ))
+
+(defn update-search-status [db search-request-id new-status]
+  {:pre [(s/valid? :tiira/search-status new-status)]}
+  (-> (fs/doc (fs/coll db search-requests-index) search-request-id)
+      (fs/assoc! :search-status new-status)
+      ))
 
 (defn delete-search-request [db search-request-id]
   (fs/delete! (fs/doc (fs/coll db search-requests-index) search-request-id)))

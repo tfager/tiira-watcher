@@ -97,5 +97,6 @@
           ", user " (:username s-req)
           ", area " (:area s-req))
     ;; Delete first to avoid infinite loop if something goes wrong
+    ;; TODO: Mark into "in progress" instead. How to test when production is running?
     (store/delete-search-request db (:id s-req))
     (tiira-search-and-store db (:area s-req))))

@@ -9,30 +9,29 @@ Cloud service to prefetch bird sightings from Tiira service and present them nic
 * Build running environment with [Terraform](https://www.terraform.io/)
 * Set up GHA build with [Setup Clojure](https://github.com/marketplace/actions/setup-clojure) action
 
-## Running in Google Cloud
-
-(For most of the links you need to copy URL, edit project ID and only then open)
+## Setup in Google Cloud
 
 1. Set up a project in [cloud console](https://console.cloud.google.com/)
-2. Add to yourself the role `Service Account Token Creator` in [IAM](https://console.cloud.google.com/iam-admin/iam) (needed for local docker push, maybe not essential)
-3. Init GCP project by running [gcloud-init.sh](gcloud-init.sh) - TODO: need ServiceAccount first
-4. Enable [App Engine](https://console.cloud.google.com/apis/library/appengine.googleapis.com?project=<projectid>)
-5. Set up GCP according to [Terraform tutorial](https://learn.hashicorp.com/tutorials/terraform/google-cloud-platform-build?in=terraform/gcp-get-started)
-6. Create [Firebase project](https://console.firebase.google.com/) for the Google Cloud project
-7. Enable [IAM API](https://console.developers.google.com/apis/api/iam.googleapis.com/overview?project=<projectid>) 
-8. Enable [Cloud Run Admin API](https://console.developers.google.com/apis/api/run.googleapis.com/overview?project=<projectid>>)
-9. Enable [Service Control API](https://console.cloud.google.com/marketplace/product/google/servicecontrol.googleapis.com?q=search&referrer=search&project=<projectid>)
-10. Enable [API Gateway](https://console.developers.google.com/apis/api/apigateway.googleapis.com/overview?project=<projectid>)
-11. Enable Container Registry API: `gcloud services enable artifactregistry.googleapis.com`
-12. Enable email+password [authentication in Firebase](https://console.firebase.google.com/u/1/project/<project-id>/authentication/providers)
-13. Generate admin key for [Firebase Admin SDK](https://console.firebase.google.com/u/0/project/<projectid>/settings/serviceaccounts/adminsdk)
-14. Fill in CI terraform variables as in [template](terraform/ci/registry.tfvars.template) into `terraform/gcr.tfvars`
-15. Go to `terraform/ci` directory of the checked out project, and `terraform init` and `terraform apply -var-file=registry.tfvars`
-16. Fill in terraform variables as in [template](terraform/gcr.tfvars.template) into `terraform/gcr.tfvars`
-17. Go to terraform directory of the checked out project, and `terraform init` and `terraform apply -var-file=gcr.tfvars`
-16. 
+1. Init GCP project by running [gcloud-init.sh](gcloud-init.sh)
+1. Fill in CI terraform variables as in [template](terraform/ci/registry.tfvars.template) into `terraform/gcr.tfvars`
+1. Go to `terraform/ci` directory of the checked out project, and `terraform init --backend-config=../config/dev.config` and `terraform apply -var-file=registry.tfvars`
+1. Run terraform apply --var-file=registry.tfvars
+1. Fill in terraform variables as in [template](terraform/ci/registry.tfvars.template) into `terraform/ci/registry.tfvars`
+1. Complete github actions setup as below
+1. Go to terraform directory of the checked out project, and `terraform init` and `terraform apply -var-file=gcr.tfvars`
+1. Fill in terraform variables as in [template](terraform/gcr.tfvars.template) into `terraform/gcr.tfvars`
 
-(TODO: enable APIs with `gcloud services enable cloudbuild.googleapis.com compute.googleapis.com`)
+## User Setup
+
+1. Create [Firebase project](https://console.firebase.google.com/) for the Google Cloud project
+1. Enable email+password [authentication in Firebase](https://console.firebase.google.com/u/0/project/<project-id>/authentication/providers)
+1. Generate admin key for [Firebase Admin SDK](https://console.firebase.google.com/u/0/project/<projectid>/settings/serviceaccounts/adminsdk)
+1. Find API key in [Firebase settings](https://console.firebase.google.com/u/0/project/tiira-watcher-prod/settings/general)
+1. Set up python for user admin
+ * For the first time: `pyenv install 3.10.4; pyenv virtualenv 3.10.4 tiira-watcher; pip install -r requirements.txt`
+ * Later simply: `pyenv activate tiira-watcher`
+1. Set `export FIREBASE_CREDS_FILE=./firebase_admin_key.json`
+1. Run `python ./user_admin.py` and add username+password as prompted
 
 ## Github Actions Setup
 

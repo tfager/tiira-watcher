@@ -6,7 +6,7 @@ terraform {
   }
 
   backend "gcs" {
-    bucket = "tiira-watcher-dev-terraform-backend"
+    bucket = "${var.project}-terraform-backend"
     prefix = "terraform/state"
   }
 }
@@ -45,7 +45,6 @@ provider "google" {
 
   project = var.project
   region  = var.location_full
-  #zone    = "europe-north1-b"
 }
 
 provider "google-beta" {
@@ -53,7 +52,13 @@ provider "google-beta" {
 
   project = var.project
   region  = var.location_full
-  #zone    = "europe-north1-b"
+}
+
+resource "google_firestore_database" "database" {
+  project     = var.project
+  name        = "(default)"
+  location_id = var.location_full
+  type        = "FIRESTORE_NATIVE"
 }
 
 resource "google_firestore_index" "sightings_index" {

@@ -9,7 +9,7 @@ resource "google_cloud_run_service" "ui" {
   template {
     spec {
       containers {
-        image = "europe-north1-docker.pkg.dev/tiira-watcher-dev/tiira-watcher-repo/tiira-watcher-ui:${local.ui_version}"
+        image = "europe-north1-docker.pkg.dev/${var.project}/tiira-watcher-repo/tiira-watcher-ui:${local.ui_version}"
       }
     }
   }

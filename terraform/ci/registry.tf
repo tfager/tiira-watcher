@@ -6,7 +6,6 @@ terraform {
   }
 
   backend "gcs" {
-    bucket = "tiira-watcher-dev-terraform-backend"
     prefix = "terraform-ci/state"
   }
 }

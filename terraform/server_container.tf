@@ -7,6 +7,7 @@ resource "google_service_account" "service_account_apigw" {
   display_name = "API GW Service Account"
 }
 
+
 resource "google_cloud_run_service" "tiira_watcher_api" {
   name     = "tiira-watcher"
   location = var.location_full
@@ -14,7 +15,7 @@ resource "google_cloud_run_service" "tiira_watcher_api" {
   template {
     spec {
       containers {
-        image = "europe-north1-docker.pkg.dev/tiira-watcher-dev/tiira-watcher-repo/tiira-watcher:${local.server_version}"
+        image = "europe-north1-docker.pkg.dev/${var.project}/tiira-watcher-repo/tiira-watcher:${local.server_version}"
         args = ["server"]
         env {
           name  = "FIRESTORE_PROJECT_ID"
