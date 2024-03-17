@@ -1,0 +1,13 @@
+name: Deploy to development
+on:
+    workflow_dispatch:
+
+jobs:
+    build:
+        uses: ./.github/workflows/terraform-deploy.yml
+        with:
+            environment: prod
+        secrets:
+            GCR_PROJECT: ${{ secrets.GCR_PROJECT }}
+            TERRAFORM_SA_KEY: ${{ secrets.GCR_SA_KEY }}
+            TERRAFORM_VARS: ${{ secrets.TERRAFORM_VARS }}

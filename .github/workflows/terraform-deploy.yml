@@ -1,12 +1,25 @@
 name: "Terraform deployment to GCP"
 
 on:
-  workflow_dispatch:
-
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: environment to deploy to
+        required: true
+    secrets:
+      GCR_PROJECT:
+        required: true
+      TERRAFORM_SA_KEY:
+        required: true
+      TERRAFORM_VARS:
+        required: true
+  
 jobs:
   terraform-apply:
     name: "Terraform apply job"
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
 
     steps:
       - name: Checkout
@@ -19,7 +32,7 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCR_SA_KEY }}
+          credentials_json: ${{ secrets.TERRAFORM_SA_KEY }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -35,7 +48,7 @@ jobs:
         working-directory: ./terraform
         run: 'echo "$GCP_KEY" > gcp-credentials.json'
         env:
-          GCP_KEY: ${{secrets.GCR_SA_KEY}}
+          GCP_KEY: ${{secrets.TERRAFORM_SA_KEY}}
 
       - name: Bring terraform vars from github secrets
         working-directory: ./terraform
