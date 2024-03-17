@@ -56,9 +56,13 @@ jobs:
         env:
           VARS: ${{secrets.TERRAFORM_VARS}}
 
+      - name: Generate terraform backend config
+        working-directory: ./terraform
+        run: 'echo "bucket = \"${{secrets.GCR_PROJECT }}-terraform-backend\"" > terraform.config'
+
       - name: Terraform init
         working-directory: ./terraform
-        run: terraform init -reconfigure
+        run: terraform init -reconfigure --backend-config=./terraform.config
         env:
           GOOGLE_APPLICATION_CREDENTIALS: "./gcp-credentials.json"
 
