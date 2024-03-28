@@ -40,6 +40,16 @@ variable "ui_server_cors" {
   type = string
 }
 
+# Note: this is only known after API GW has been created in gateway.tf,
+# so a placeholder value needs to be in the variables on the initial run
+variable "api_gateway" {
+  type = string
+}
+
+locals {
+  server_version = file("server_version.txt")
+}
+
 provider "google" {
   credentials = file(var.gcloud_creds_file)
 
@@ -90,3 +100,4 @@ resource "google_firestore_index" "search_request_index" {
     order      = "ASCENDING"
   }
 }
+

@@ -3,6 +3,11 @@ resource "google_api_gateway_api" "api" {
   api_id   = "tiira-watcher-api"
 }
 
+resource "google_service_account" "service_account_apigw" {
+  account_id   = "apigw-sa"
+  display_name = "API GW Service Account"
+}
+
 resource "google_api_gateway_api_config" "api_cfg" {
   provider             = google-beta
   api                  = google_api_gateway_api.api.api_id
@@ -12,8 +17,9 @@ resource "google_api_gateway_api_config" "api_cfg" {
     document {
       path = "spec.yaml"
       contents = base64encode(templatefile("./tiira_watcher_api_swagger.yml",
-        { project      = var.project,
-          api_endpoint = google_cloud_run_service.tiira_watcher_api.status[0].url
+        { project      = var.project
+          api_endpoint = "https://tiira-watcher-j5vmdw3ozq-lz.a.run.app" # google_cloud_run_v2_service.tiira_watcher_api.traffic_statuses[0].uri
+          api_gateway  = var.api_gateway
       }))
     }
   }

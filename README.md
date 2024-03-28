@@ -14,12 +14,15 @@ Cloud service to prefetch bird sightings from Tiira service and present them nic
 1. Set up a project in [cloud console](https://console.cloud.google.com/)
 1. Init GCP project by running [gcloud-init.sh](gcloud-init.sh)
 1. Fill in CI terraform variables as in [template](terraform/ci/registry.tfvars.template) into `terraform/gcr.tfvars`
-1. Go to `terraform/ci` directory of the checked out project, and `terraform init --backend-config=../config/dev.config` and `terraform apply -var-file=registry.tfvars`
-1. Run terraform apply --var-file=registry.tfvars
+1. Go to `terraform/ci` directory of the checked out project, and `terraform init --backend-config=../config/dev.config`
 1. Fill in terraform variables as in [template](terraform/ci/registry.tfvars.template) into `terraform/ci/registry.tfvars`
+1. In `terraform/ci`, run `terraform apply --var-file=registry.tfvars`
 1. Complete github actions setup as below
-1. Go to terraform directory of the checked out project, and `terraform init` and `terraform apply -var-file=gcr.tfvars`
+1. Go to terraform directory of the checked out project, and `terraform init --backend-config=../config/dev.config`
 1. Fill in terraform variables as in [template](terraform/gcr.tfvars.template) into `terraform/gcr.tfvars`
+1. Run `terraform apply --var-file=gcr.tfvars`
+1. After first run, when API Gateway has been created, place the output `api_gateway` into `gcr.tfvars`. This can't be done automatically because it creates a dependency cycle between API GW and API Config. Should figure out a way to do this.
+1. Run again `terraform apply --var-file=gcr.tfvars` to get the API Gateway URL right
 
 ## User Setup
 
@@ -50,8 +53,7 @@ Cloud service to prefetch bird sightings from Tiira service and present them nic
 ## Notes
 
 For local docker push, do:
-```gcloud auth configure-docker europe-north1-docker.pkg.dev```
-(sets up $HOME/.docker/config.json)
+```./build.sh -push```
 
-Then push as seen in [build.sh](build.sh).
+See [build.sh](build.sh) for details; implicitly sets up $HOME/.docker/config.json.
 

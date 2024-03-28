@@ -83,6 +83,14 @@ resource "google_cloud_run_v2_job_iam_policy" "trigger_sa_invoke_right" {
   policy_data = data.google_iam_policy.trigger_sa_invoke_right_policy.policy_data
 }
 
+resource "google_project_iam_member" "trigger_sa_firestore_access" {
+  provider = google-beta
+  project  = var.project
+  role     = "roles/datastore.user"
+  member   = "serviceAccount:${google_service_account.service_account_trigger.email}"
+}
+
+
 resource "google_cloudfunctions_function" "search_request_trigger" {
   name        = "search-request-trigger"
   # NOTE, Cloud functions not supported in europe-north1 it seems, using gw_location instead

@@ -26,7 +26,6 @@ echo "Project = $PROJECT"
 gcloud --project $PROJECT services enable \
     apigateway.googleapis.com \
     firestore.googleapis.com \
-    cloudbuild.googleapis.com \
     eventarc.googleapis.com \
     logging.googleapis.com \
     pubsub.googleapis.com \
@@ -34,6 +33,11 @@ gcloud --project $PROJECT services enable \
     workflows.googleapis.com \
     cloudfunctions.googleapis.com \
     secretmanager.googleapis.com \
+    iam.googleapis.com \
+    servicecontrol.googleapis.com \
+    cloudbuild.googleapis.com
+    # Servicecontrol needed for cloud console, not sure if needed for anything else
+    # Cloudbuild Needed for search req cloud function
 
 ROLES=(
 #    roles/resourcemanager.projectIamAdmin
@@ -48,7 +52,7 @@ ROLES=(
 #     roles/iam.serviceAccountAdmin
 #     roles/iam.serviceAccountKeyAdmin
 #     roles/iam.serviceAccountUser
-     roles/apigateway.admin
+#     roles/apigateway.admin
     )
 
 for role in "${ROLES[@]}"

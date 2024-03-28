@@ -12,11 +12,11 @@ securityDefinitions:
     authorizationUrl: ''
     flow: implicit
     type: oauth2
-    x-google-issuer: "https://securetoken.google.com/tiira-watcher-dev"
+    x-google-issuer: "https://securetoken.google.com/${project}"
     x-google-jwks_uri: "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com"
     x-google-audiences: "${project}"
 x-google-endpoints:
-  - name: https://api-gw-8jy625wu.ew.gateway.dev
+  - name: ${api_gateway}
     allowCors: True
 paths:
   /sightings:

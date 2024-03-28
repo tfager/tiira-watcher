@@ -27,3 +27,5 @@ tiira-watcher-dev*.json
 /search-request-trigger/package-lock.json
 /terraform/config/dev.config
 /terraform/config/prod.config
+.clj-kondo/
+.lsp/
