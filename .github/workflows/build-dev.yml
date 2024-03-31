@@ -1,8 +1,7 @@
 name: Build and push to development
 on:
     pull_request:
-        branches-ignore:
-            - main
+
 jobs:
     build:
         uses: ./.github/workflows/gcr-build.yml
