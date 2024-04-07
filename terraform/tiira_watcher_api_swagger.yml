@@ -39,6 +39,16 @@ paths:
       x-google-backend:
         address: "${api_endpoint}/sightings"
   /search:
+    get:
+      security:
+        - firebase: []
+      description: Get search requests
+      operationId: get-search
+      responses:
+        '200':
+          description: Success
+      x-google-backend:
+        address: "${api_endpoint}/search"
     post:
       security:
         - firebase: []

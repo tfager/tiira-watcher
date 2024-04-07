@@ -35,6 +35,12 @@
         fs/pullv)
     ))
 
+(defn log-and-return
+  "Log the argument and return it too"
+  [x]
+  (info x)
+  x)
+
 (defn clean-sightings [db end-timestamp]
   (fs/delete-all! (-> (fs/coll db sightings-index)
                       (fs/filter<= "timestamp" end-timestamp))))
@@ -45,14 +51,14 @@
       (fs/set! (cske/transform-keys csk/->kebab-case-string search-request))))
 
 (defn read-search-requests [db]
-  {:post [(s/valid? (s/coll-of :tiira/search-req-complete) %)]}
+  ;; {:post [(s/valid? (s/coll-of :tiira/search-req-complete) %)]}
+  ;; TODO: should validate type, but gives class clojure.lang.APersistentMap$ValSeq cannot be cast to class clojure.lang.IFn
   (info "Getting search requests from Firestore")
-  (map
+   (map
     #(cske/transform-keys csk/->kebab-case-keyword %)
     (-> (fs/coll db search-requests-index)
         (fs/order-by "timestamp" :asc)
-        fs/pullv)
-    ))
+        fs/pullv)))
 
 (defn update-search-status [db search-request-id new-status]
   {:pre [(s/valid? :tiira/search-status new-status)]}

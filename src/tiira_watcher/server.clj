@@ -43,8 +43,7 @@
 (s/def :tiira/timestamp number?)
 (s/def :tiira/search-status (vals logic/search-status))
 (s/def :tiira/search-req (s/keys :req-un [:tiira/area]))
-(s/def :tiira/search-req-complete (s/keys :req-un [:tiira/id :tiira/timestamp :tiira/area :tiira/username]
-                                          :opt-un [:tiira/search-status]))
+(s/def :tiira/search-req-complete (s/keys :req-un [:tiira/timestamp :tiira/area :tiira/username :tiira/search-status]))
 
 (defn enrich-search-request [search-request]
   {:pre [(s/valid? :tiira/search-req search-request)]
@@ -73,7 +72,7 @@
   (info "Getting search requests")
   (let [db (store/connect-db)
         result (store/read-search-requests db)]
-    (resp/response result)))
+    (resp/response {:results result })))
 
 (defroutes api-routes
            (GET "/sightings" [] get-sightings)

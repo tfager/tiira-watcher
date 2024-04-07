@@ -29,3 +29,5 @@ tiira-watcher-dev*.json
 /terraform/config/prod.config
 .clj-kondo/
 .lsp/
+.calva/
+
