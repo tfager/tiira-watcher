@@ -72,7 +72,7 @@
   (info "Getting search requests")
   (let [db (store/connect-db)
         result (store/read-search-requests db)]
-    (resp/response {:results result })))
+    (resp/response {:results (map #(cske/transform-keys csk/->camelCaseKeyword %) result) })))
 
 (defroutes api-routes
            (GET "/sightings" [] get-sightings)

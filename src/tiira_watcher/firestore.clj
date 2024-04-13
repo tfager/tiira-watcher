@@ -53,7 +53,7 @@
 (defn write-search-request [db search-request]
   {:pre [(s/valid? :tiira/search-req-complete search-request)]}
   (-> (fs/doc (fs/coll db search-requests-index) (str (:id search-request)))
-      (fs/set! (cske/transform-keys csk/->snake_case_string search-request))))
+      (fs/set! (to-db search-request))))
 
 (defn read-search-requests [db]
   {:post [(s/valid? (s/coll-of :tiira/search-req-complete) %)]}
