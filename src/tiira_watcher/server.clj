@@ -41,7 +41,7 @@
 (s/def :tiira/username string?)
 (s/def :tiira/id string?)
 (s/def :tiira/timestamp number?)
-(s/def :tiira/search-status (vals logic/search-status))
+(s/def :tiira/search-status (set (vals logic/search-status)))
 (s/def :tiira/search-req (s/keys :req-un [:tiira/area]))
 (s/def :tiira/search-req-complete (s/keys :req-un [:tiira/timestamp :tiira/area :tiira/username :tiira/search-status]))
 

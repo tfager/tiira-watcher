@@ -97,9 +97,9 @@
     (info "Processing search request " (:id s-req)
           ", timestamp " (cc/from-long (:timestamp s-req))
           ", user " (:username s-req)
-          ", area " (:area s-req))
+          ", area " (:area s-req)
+          ", status " (:search-status s-req))
     ;; Update status first to avoid infinite loop if something goes wrong
     (store/update-search-status db (:id s-req) (:searching search-status))
     (tiira-search-and-store db (:area s-req))
-    (store/update-search-status db (:id s-req) (:done search-status))
-    ))
+    (store/update-search-status db (:id s-req) (:done search-status))))

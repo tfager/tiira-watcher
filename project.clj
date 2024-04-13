@@ -17,6 +17,7 @@
                  [compojure "1.7.0"]
                  ]
   :source-paths ["src"]
+  :test-paths ["test"]
   :repl-options {:init-ns tiira-watcher.core}
   :main tiira-watcher.core
   :plugins [[lein-environ "1.2.0"]]
