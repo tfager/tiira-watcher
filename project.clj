@@ -1,4 +1,4 @@
-(defproject tiira-watcher "0.10.5"
+(defproject tiira-watcher "1.0.0"
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [clj-http "3.12.3"]
                  [clj-tagsoup "0.3.0" :exclusions [org.clojure/clojure]]
@@ -17,6 +17,7 @@
                  [compojure "1.7.0"]
                  ]
   :source-paths ["src"]
+  :test-paths ["test"]
   :repl-options {:init-ns tiira-watcher.core}
   :main tiira-watcher.core
   :plugins [[lein-environ "1.2.0"]]

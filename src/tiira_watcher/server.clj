@@ -3,6 +3,7 @@
             [compojure.route :as route]
             [tiira-watcher.firestore :as store]
             [tiira-watcher.tiira :as tiira]
+            [tiira-watcher.logic :as logic]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.json :as rjson]
             [ring.middleware.params :as rparams]
@@ -40,10 +41,9 @@
 (s/def :tiira/username string?)
 (s/def :tiira/id string?)
 (s/def :tiira/timestamp number?)
-(s/def :tiira/search-status #{"NEW" "SEARCHING" "DONE"})
+(s/def :tiira/search-status (set (vals logic/search-status)))
 (s/def :tiira/search-req (s/keys :req-un [:tiira/area]))
-(s/def :tiira/search-req-complete (s/keys :req-un [:tiira/id :tiira/timestamp :tiira/area :tiira/username]
-                                          :opt-un [:tiira/search-status]))
+(s/def :tiira/search-req-complete (s/keys :req-un [:tiira/timestamp :tiira/area :tiira/username :tiira/search-status]))
 
 (defn enrich-search-request [search-request]
   {:pre [(s/valid? :tiira/search-req search-request)]
@@ -52,7 +52,7 @@
     :id (str (random-uuid))
     :timestamp (cc/to-long (ct/now))
     :username  "TODO"
-    :search-status "NEW"
+    :search-status (:new logic/search-status)
     )
   )
 (defn search-sightings [request]
@@ -72,7 +72,7 @@
   (info "Getting search requests")
   (let [db (store/connect-db)
         result (store/read-search-requests db)]
-    (resp/response result)))
+    (resp/response {:results (map #(cske/transform-keys csk/->camelCaseKeyword %) result) })))
 
 (defroutes api-routes
            (GET "/sightings" [] get-sightings)

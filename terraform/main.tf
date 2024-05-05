@@ -71,32 +71,17 @@ resource "google_firestore_database" "database" {
   type        = "FIRESTORE_NATIVE"
 }
 
-resource "google_firestore_index" "sightings_index" {
-  project    = var.project
-  collection = "sightings"
-
-  fields {
-    field_path = "id"
-    order      = "DESCENDING"
-  }
-
-  fields {
-    field_path = "timestamp"
-    order      = "DESCENDING"
-  }
-}
-
 resource "google_firestore_index" "search_request_index" {
   project    = var.project
   collection = "search_request"
 
   fields {
-    field_path = "id"
-    order      = "DESCENDING"
+    field_path = "timestamp"
+    order      = "ASCENDING"
   }
 
   fields {
-    field_path = "timestamp"
+    field_path = "search_status"
     order      = "ASCENDING"
   }
 }

@@ -60,6 +60,8 @@
                  "Västäräkki"
                  })
 
+(def search-status {:new "NEW" :searching "SEARCHING" :done "DONE"})
+
 (defn tiira-search [username password area]
   (tiira/tiira-login username password)
   (tiira/store-map-border (get areas (keyword area)))
@@ -95,8 +97,9 @@
     (info "Processing search request " (:id s-req)
           ", timestamp " (cc/from-long (:timestamp s-req))
           ", user " (:username s-req)
-          ", area " (:area s-req))
-    ;; Delete first to avoid infinite loop if something goes wrong
-    ;; TODO: Mark into "in progress" instead. How to test when production is running?
-    (store/delete-search-request db (:id s-req))
-    (tiira-search-and-store db (:area s-req))))
+          ", area " (:area s-req)
+          ", status " (:search-status s-req))
+    ;; Update status first to avoid infinite loop if something goes wrong
+    (store/update-search-status db (:id s-req) (:searching search-status))
+    (tiira-search-and-store db (:area s-req))
+    (store/update-search-status db (:id s-req) (:done search-status))))
