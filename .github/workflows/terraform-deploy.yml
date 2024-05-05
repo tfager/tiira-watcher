@@ -46,7 +46,9 @@ jobs:
 
       - name: Bring GCP service account key from github secrets
         working-directory: ./terraform
-        run: 'echo "$GCP_KEY" > gcp-credentials.json'
+        run: |
+          echo "$GCP_KEY" > gcp-credentials.json        # Dev
+          echo "$GCP_KEY" > tiira-watcher-prod-sa.json  # Prod
         env:
           GCP_KEY: ${{secrets.TERRAFORM_SA_KEY}}
 
