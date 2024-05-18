@@ -57,6 +57,7 @@ For local docker push, do:
 
 See [build.sh](build.sh) for details; implicitly sets up $HOME/.docker/config.json.
 
+To sync server versions (last built by GHA) to local dev, you can do `gsutil cp "gs://${PROJECT}-terraform-backend/app_versions/*.txt" .`
 Data model design:
 * Kebab case as keywords within clojure (`:search-status`)
 * Camel case in API (`searchStatus`)

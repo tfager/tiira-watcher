@@ -4,6 +4,7 @@
              [environ.core :refer [env]]
              [taoensso.timbre :refer [info]]
              [clj-time.coerce :as cc]
+             [clj-time.core :as ct]
              ))
 
 (def areas {
@@ -103,3 +104,11 @@
     (store/update-search-status db (:id s-req) (:searching search-status))
     (tiira-search-and-store db (:area s-req))
     (store/update-search-status db (:id s-req) (:done search-status))))
+
+(defn clean-old-items [db]
+  (let [sightings-date-limit (ct/minus (ct/now) (ct/days 7))
+        reqs-date-limit (ct/minus (ct/now) (ct/days 2))]
+    (info "Cleaning sightings older than " sightings-date-limit)
+    (store/clean-sightings db (inst-ms sightings-date-limit))
+    (info "Cleaning search requests older than " reqs-date-limit)
+    (store/clean-search-requests db (inst-ms reqs-date-limit))))

@@ -47,6 +47,7 @@
   x)
 
 (defn clean-sightings [db end-timestamp]
+  (info "Cleaning sightings older than " end-timestamp)
   (fs/delete-all! (-> (fs/coll db sightings-index)
                       (fs/filter<= "timestamp" end-timestamp))))
 
@@ -68,5 +69,7 @@
   (-> (fs/doc (fs/coll db search-requests-index) search-request-id)
       (fs/assoc! "search_status" new-status)))
 
-(defn delete-search-request [db search-request-id]
-  (fs/delete! (fs/doc (fs/coll db search-requests-index) search-request-id)))
+(defn clean-search-requests [db end-timestamp]
+  (info "Cleaning search requests from Firestore after " end-timestamp)
+  (fs/delete-all! (-> (fs/coll db search-requests-index)
+     (fs/filter<= "timestamp" end-timestamp))))
