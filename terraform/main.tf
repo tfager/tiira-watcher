@@ -15,6 +15,10 @@ variable "project" {
   type = string
 }
 
+variable "project_number" {
+  type = string
+}
+
 variable "gcloud_creds_file" {
   type = string
 }

@@ -6,7 +6,7 @@
 #  - see https://learn.hashicorp.com/tutorials/terraform/google-cloud-platform-build?in=terraform/gcp-get-started
 TERRAFORM_SA_SHORT=terraform-account
 REGION=europe-north1
-if [ $1 == "production" ]
+if [ "_$1" == "_production" ]
 then
     PROJECT=tiira-watcher-prod
 else
@@ -20,7 +20,7 @@ echo "Project = $PROJECT"
 
 # Create terraform SA
 #gcloud iam service-accounts --project $PROJECT create "$TERRAFORM_SA_SHORT" --display-name="Terraform Service Account"
-gcloud iam service-accounts --project $PROJECT keys create $TERRAFORM_SA_SECRETS_FILE --iam-account=$TERRAFORM_SA
+#gcloud iam service-accounts --project $PROJECT keys create $TERRAFORM_SA_SECRETS_FILE --iam-account=$TERRAFORM_SA
 
 # Enable GCP Services
 gcloud --project $PROJECT services enable \
@@ -35,7 +35,8 @@ gcloud --project $PROJECT services enable \
     secretmanager.googleapis.com \
     iam.googleapis.com \
     servicecontrol.googleapis.com \
-    cloudbuild.googleapis.com
+    cloudbuild.googleapis.com \
+    cloudscheduler.googleapis.com
     # Servicecontrol needed for cloud console, not sure if needed for anything else
     # Cloudbuild Needed for search req cloud function
 
@@ -53,6 +54,7 @@ ROLES=(
 #   roles/iam.serviceAccountKeyAdmin
 #   roles/iam.serviceAccountUser
 #   roles/apigateway.admin
+    roles/cloudscheduler.admin
     )
 
 for role in "${ROLES[@]}"
