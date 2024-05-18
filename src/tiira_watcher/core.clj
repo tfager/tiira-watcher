@@ -3,7 +3,6 @@
             [tiira-watcher.server :as server]
             [tiira-watcher.logic :as logic]
             [geo-conversion.core :as geo]
-            [clj-time.core :as ct]
             [taoensso.timbre :as log]
             )
   (:import (java.util Date))
@@ -49,11 +48,10 @@
 
 (defn -main [command & rest]
   (log/set-min-level! :info)
-  (let [clean-upto (ct/minus (ct/now) (ct/days 7))
-        db (store/connect-db)]
+  (let [db (store/connect-db)]
   (case command
     "search"       (logic/tiira-search-and-store db (first rest))
-    "clean"        (store/clean-sightings db (inst-ms clean-upto))
+    "clean"        (logic/clean-old-items db)
     "search-reqs"  (logic/tiira-process-search-requests db)
     "server"       (server/-main)
     )))
