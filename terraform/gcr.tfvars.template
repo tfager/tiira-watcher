@@ -1,7 +1,10 @@
-project           = xx
+project           = "..."
+project_number    = "..."
 location_full     = "europe-north1"
 gw_location_full  = "europe-west1"
 gcloud_creds_file = "gcp-credentials.json"
-tiira_username    = xx
-tiira_password    = xx
+tiira_username    = "..."
+tiira_password    = "..."
+ui_server_cors    = "https://(hostname1|hostname2.a.run.app)"
+api_gateway       = "https://xxx.gateway.dev"
 

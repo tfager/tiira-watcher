@@ -18,10 +18,12 @@ resource "google_api_gateway_api_config" "api_cfg" {
       path = "spec.yaml"
       contents = base64encode(templatefile("./tiira_watcher_api_swagger.yml",
         { project      = var.project
-          api_endpoint = "https://tiira-watcher-j5vmdw3ozq-lz.a.run.app" # google_cloud_run_v2_service.tiira_watcher_api.traffic_statuses[0].uri
+          # TODO: Not sure if this works on initial run, since the API GW is not yet created
+          api_endpoint = google_cloud_run_v2_service.tiira_watcher_api.uri
           api_gateway  = var.api_gateway
       }))
     }
+    
   }
 
   lifecycle {
@@ -33,6 +35,7 @@ resource "google_api_gateway_api_config" "api_cfg" {
       google_service_account = google_service_account.service_account_apigw.name
     }
   }
+  depends_on = [google_cloud_run_v2_service.tiira_watcher_api]
 }
 
 # API GW not available in europe-north1 as of this writing: https://cloud.google.com/api-gateway/docs/deployment-model
