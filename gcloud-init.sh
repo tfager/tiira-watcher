@@ -54,7 +54,8 @@ ROLES=(
 #   roles/iam.serviceAccountKeyAdmin
 #   roles/iam.serviceAccountUser
 #   roles/apigateway.admin
-    roles/cloudscheduler.admin
+#   roles/cloudscheduler.admin
+    roles/eventarc.admin
     )
 
 for role in "${ROLES[@]}"
