@@ -91,32 +91,35 @@ resource "google_project_iam_member" "trigger_sa_firestore_access" {
 }
 
 
-resource "google_cloudfunctions_function" "search_request_trigger" {
-  name        = "search-request-trigger"
-  # NOTE, Cloud functions not supported in europe-north1 it seems, using gw_location instead
-  region      = var.gw_location_full
-  description = "When new search request is inserted, automatically invokes search job in Cloud Run."
-  runtime     = "nodejs16"
-  event_trigger {
-    event_type = "providers/cloud.firestore/eventTypes/document.create"
-    resource   = "projects/${var.project}/databases/(default)/documents/search_requests/{id}"
-  }
-  source_archive_bucket        = "${var.project}-terraform-backend"
-  source_archive_object        = "search-request-trigger/search-request-trigger.zip"
-  available_memory_mb          = 128
-  timeout                      = 60
-  entry_point                  = "searchRequestWriteTrigger"
-  service_account_email = google_service_account.service_account_trigger.email
-
-  environment_variables = {
-    PROJECT = var.project
-    LOCATION = var.location_full
-    SEARCH_JOB = google_cloud_run_v2_job.search_job.name
-    SECRET_NAME = google_secret_manager_secret.trigger_json_key_secret.secret_id
-  }
-
-  secret_volumes {
-    mount_path = "/secrets"
-    secret     = google_secret_manager_secret.trigger_json_key_secret.secret_id
-  }
-}
+# resource "google_cloudfunctions_function" "search_request_trigger" {
+#   name        = "search-request-trigger"
+#   # NOTE, Cloud functions not supported in europe-north1 it seems, using gw_location instead
+#   region      = var.gw_location_full
+#   description = "When new search request is inserted, automatically invokes search job in Cloud Run."
+#   runtime     = "nodejs16"
+#   event_trigger {
+#     event_type = "providers/cloud.firestore/eventTypes/document.create"
+#     resource   = "projects/${var.project}/databases/(default)/documents/search_requests/{id}"
+#   }
+#   source_archive_bucket        = "${var.project}-terraform-backend"
+#   source_archive_object        = "search-request-trigger/search-request-trigger.zip"
+#   available_memory_mb          = 128
+#   timeout                      = 60
+#   entry_point                  = "searchRequestWriteTrigger"
+#   service_account_email = google_service_account.service_account_trigger.email
+#   docker_registry =  "ARTIFACT_REGISTRY"
+#   # TODO: CI-puolella, mahtaneeko toimia
+#   docker_repository = "${google_artifact_registry_repository.tiira-docker-repo.location}/${google_artifact_registry_repository.tiira-docker-repo.name}"
+# 
+#   environment_variables = {
+#     PROJECT = var.project
+#     LOCATION = var.location_full
+#     SEARCH_JOB = google_cloud_run_v2_job.search_job.name
+#     SECRET_NAME = google_secret_manager_secret.trigger_json_key_secret.secret_id
+#   }
+# 
+#   secret_volumes {
+#     mount_path = "/secrets"
+#     secret     = google_secret_manager_secret.trigger_json_key_secret.secret_id
+#   }
+# }
