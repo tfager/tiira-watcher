@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Example Gateway
   description: API Gateway with firebase auth
-  version: 1.1.0
+  version: 1.1.1
 schemes:
   - https
 produces:
@@ -38,6 +38,7 @@ paths:
           description: Success
       x-google-backend:
         address: "${api_endpoint}/sightings"
+        deadline: 45.0
   /search:
     get:
       security:
