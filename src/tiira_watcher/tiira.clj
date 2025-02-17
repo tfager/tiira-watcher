@@ -117,9 +117,9 @@
   (second (re-find #"haku=Hae&amp;sivu=(\d+)\" onmouseover=\"javascript: ohje\('Seuraava'" content)))
 
 (defn advanced-search
-  ([] (advanced-search 0 []))
+  ([] (advanced-search "0" []))
   ([page-num results-so-far]
-   (let [query-params (if (= 0 page-num) adv-search-defaults (assoc adv-search-defaults :sivu (str page-num)))
+   (let [query-params (if (= "0" page-num) adv-search-defaults (assoc adv-search-defaults :sivu (str page-num)))
          resp (http/get (str *tiira-base-uri* "/index.php")
                         (merge tiira-http-defaults
                                {:query-params query-params}))]
