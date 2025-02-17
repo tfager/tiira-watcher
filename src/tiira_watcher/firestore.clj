@@ -29,8 +29,9 @@
 
 
 (defn write-sighting [db sighting]
-  (-> (fs/doc (fs/coll db sightings-index) (str (:id sighting)))
-      (fs/set! (to-db sighting))))
+  (fs/set!
+   (fs/doc (fs/coll db sightings-index) (str (:id sighting)))
+   (to-db sighting)))
 
 (defn read-sightings-timed [db start-timestamp]
   (map from-db
@@ -48,13 +49,15 @@
 
 (defn clean-sightings [db end-timestamp]
   (info "Cleaning sightings older than " end-timestamp)
-  (fs/delete-all! (-> (fs/coll db sightings-index)
-                      (fs/filter<= "timestamp" end-timestamp))))
+  (fs/delete-all! (fs/filter<= (fs/coll db sightings-index) "timestamp" end-timestamp)))
 
 (defn write-search-request [db search-request]
   {:pre [(s/valid? :tiira/search-req-complete search-request)]}
-  (-> (fs/doc (fs/coll db search-requests-index) (str (:id search-request)))
-      (fs/set! (to-db search-request))))
+  (fs/set!
+   (fs/doc
+    (fs/coll db search-requests-index)
+    (str (:id search-request)))
+   (to-db search-request)))
 
 (defn read-search-requests [db]
   {:post [(s/valid? (s/coll-of :tiira/search-req-complete) %)]}
@@ -66,10 +69,14 @@
 
 (defn update-search-status [db search-request-id new-status]
   {:pre [(s/valid? :tiira/search-status new-status)]}
-  (-> (fs/doc (fs/coll db search-requests-index) search-request-id)
-      (fs/assoc! "search_status" new-status)))
+  (fs/assoc!
+   (fs/doc (fs/coll db search-requests-index) search-request-id)
+   "search_status"
+   new-status))
 
 (defn clean-search-requests [db end-timestamp]
   (info "Cleaning search requests from Firestore after " end-timestamp)
-  (fs/delete-all! (-> (fs/coll db search-requests-index)
-     (fs/filter<= "timestamp" end-timestamp))))
+  (fs/delete-all! (fs/filter<=
+                   (fs/coll db search-requests-index)
+                   "timestamp"
+                   end-timestamp)))

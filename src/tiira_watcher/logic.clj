@@ -71,11 +71,7 @@
         filtered (filter (fn [sighting] (not (contains? blacklist (:species sighting)))) result)
         ;_ (println "Filtered results: " (count filtered))
         enriched (for [s filtered]
-                   (do
-                     (let [es (tiira/enrich-sighting s)]
-                       ; (println es)
-                       (Thread/sleep 500)
-                       es)))]
+                   (let [es (tiira/enrich-sighting s)] (Thread/sleep 500) es))]
     enriched
     ))
 
