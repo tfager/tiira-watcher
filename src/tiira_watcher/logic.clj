@@ -59,7 +59,19 @@
                  "Pikkuvarpunen"
                  "Tiltaltti"
                  "Västäräkki"
-                 })
+                 "Harakka"
+                 "Sepelkyyhky"
+                 "Punarinta"
+                 "Kottarainen"
+                 "Tikli"
+                 "Nokikana"
+                 "Pajusirkku"
+                 "Pajulintu"
+                 "Hemppo"
+                 "Käpytikka"
+                 "Tukkasotka"
+                 "Meriharakka"
+                 "Viherpeippo"})
 
 (def search-status {:new "NEW" :searching "SEARCHING" :done "DONE"})
 
