@@ -50,7 +50,14 @@ Cloud service to prefetch bird sightings from Tiira service and present them nic
 3. Upon commit & push, GHA will build new docker image with given version, and update the version number into GCS
 4. When running terraform-deploy GHA job (manually so far), it will take the image with saved version number
 
+## Local API testing
+
+`curl -v -H "Content-type: application/json" -d '{"area": "pks"}' http://localhost:8080/search`
+
+`curl -v -H "Content-type: application/json" -d '{"center-lat": 60.293913, "center-lon": 25.054611, "diag-half-km": 1}' http://localhost:8080/search`
+
 ## Notes
+
 
 For local docker push, do:
 ```./build.sh -push```

@@ -5,10 +5,11 @@
              [taoensso.timbre :refer [info]]
              [clj-time.coerce :as cc]
              [clj-time.core :as ct]
-             ))
+             [geo-conversion.core :as geo]
 
-(def areas {
-            :tikkurila   {:miny 6684066.0, :minx 389806.0
+             [clojure.spec.alpha :as s]))
+
+(def areas {:tikkurila   {:miny 6684066.0, :minx 389806.0
                           :maxy 6690151.0, :maxx 394768.0}
             :vuosaari    {:miny 6673938.0, :minx 394238.0
                           :maxy 6683821.0, :maxx 400527.0}
@@ -29,8 +30,7 @@
             :uto         {:miny 6634978.0, :minx 178117.0
                           :maxy 6647393.0, :maxx 191512.0}
             :virolahti   {:miny 6676389.0, :minx 424050.0
-                          :maxy 6729970.0, :maxx 555389.0}
-            })
+                          :maxy 6729970.0, :maxx 555389.0}})
 
 (def blacklist #{"Harmaahaikara"
                  "Haarapääsky"
@@ -75,48 +75,78 @@
 
 (def search-status {:new "NEW" :searching "SEARCHING" :done "DONE"})
 
-(defn tiira-search [username password area]
+(defn calculate-bounding-box
+  "Calculate bounding box in EPSG:3067 from center-lat, center-lon, diag-half-km."
+  [center-lat center-lon diag-half-km]
+  (let [diag-half-m (* diag-half-km 1000)
+        half-side-m (/ diag-half-m (Math/sqrt 2))
+        lat-deg-per-m (/ 1 111320.0)
+        min-lat (double (- center-lat (* half-side-m lat-deg-per-m)))
+        max-lat (double (+ center-lat (* half-side-m lat-deg-per-m)))
+        lon-deg-per-m (/ 1 (* 111320.0 (Math/cos (Math/toRadians center-lat))))
+        min-lon (double (- center-lon (* half-side-m lon-deg-per-m)))
+        max-lon (double (+ center-lon (* half-side-m lon-deg-per-m)))
+        [minx miny] (geo/convert-crs [min-lon min-lat] "EPSG:4326" "EPSG:3067")
+        [maxx maxy] (geo/convert-crs [max-lon max-lat] "EPSG:4326" "EPSG:3067")]
+    {:minx minx :miny miny :maxx maxx :maxy maxy}))
+
+(defn tiira-search
+  "Searches Tiira either by named area or by custom bounding box defined by center-lat, center-lon, diag-half-km."
+  [username password {:keys [area center-lat center-lon diag-half-km] :as params}]
   (tiira/tiira-login username password)
-  (tiira/store-map-border (get areas (keyword area)))
+  (if (and (not area)
+           center-lat center-lon diag-half-km)
+    (let [bbox (calculate-bounding-box center-lat center-lon diag-half-km)]
+      (tiira/store-map-border bbox))
+    (tiira/store-map-border (get areas (keyword area))))
   (let [result (tiira/advanced-search)
-        ;_ (println "Results: " (count result))
         filtered (filter (fn [sighting] (not (contains? blacklist (:species sighting)))) result)
-        ;_ (println "Filtered results: " (count filtered))
         enriched (for [s filtered]
                    (let [es (tiira/enrich-sighting s)] (Thread/sleep 500) es))]
-    enriched
-    ))
+    enriched))
 
-(defn tiira-search-and-store [db area]
-  (info "Searching " area)
-  (when-not (contains? env :tiira-username) (throw (IllegalStateException. "Missing environment variable TIIRA_USERNAME")))
-  (when-not (contains? env :tiira-password) (throw (IllegalStateException. "Missing environment variable TIIRA_PASSWORD")))
-  (let [username (:tiira-username env)
-        password (:tiira-password env)
-        enriched (tiira-search username password area)]
-    (doseq [s enriched]
-      (info (:species s) " " (:date s) " " (:time s) " "
-               (:osm-url s) " " (:loc-name s) " " (:extra s))
-      (store/write-sighting db s))
-    (info "Stored " (count enriched) " sightings")
-    ))
+(defn tiira-search-and-store [db s-req]
+  {:pre [(s/valid? :tiira/search-req-complete s-req)]}
+  (let [{:keys [area center-lat center-lon diag-half-km]} s-req
+        area-name (if (string? area) area (str "custom bbox: " center-lat " " center-lon " diag-half-km " diag-half-km))]
+    (info "Searching " area-name)
+    (when-not (contains? env :tiira-username) (throw (IllegalStateException. "Missing environment variable TIIRA_USERNAME")))
+    (when-not (contains? env :tiira-password) (throw (IllegalStateException. "Missing environment variable TIIRA_PASSWORD")))
+    (let [username (:tiira-username env)
+          password (:tiira-password env)
+          enriched (tiira-search username password {:area area
+                                                    :center-lat center-lat
+                                                    :center-lon center-lon
+                                                    :diag-half-km diag-half-km})]
+      (doseq [s enriched]
+        (info (:species s) " " (:date s) " " (:time s) " "
+              (:osm-url s) " " (:loc-name s) " " (:extra s))
+        (store/write-sighting db s))
+      (info "Stored " (count enriched) " sightings"))))
 
 (defn tiira-process-search-requests [db]
   (doseq [s-req (store/read-search-requests db)]
-    (info "Processing search request " (:id s-req)
-          ", timestamp " (cc/from-long (:timestamp s-req))
-          ", user " (:username s-req)
-          ", area " (:area s-req)
-          ", status " (:search-status s-req))
-    ;; Update status first to avoid infinite loop if something goes wrong
-    (store/update-search-status db (:id s-req) (:searching search-status))
-    (tiira-search-and-store db (:area s-req))
-    (store/update-search-status db (:id s-req) (:done search-status))))
+    ; Grab only NEW requests
+    (when (= (:search-status s-req) (:new search-status))
+      (info "Processing search request " (:id s-req)
+            ", timestamp " (cc/from-long (:timestamp s-req))
+            ", user " (:username s-req)
+            ", area " (:area s-req)
+            ", center-lat " (:center-lat s-req)
+            ", center-lon " (:center-lon s-req)
+            ", diag-half-km " (:diag-half-km s-req)
+            ", status " (:search-status s-req))
+      (when-not (s/valid? :tiira/search-req s-req)
+        (throw (IllegalStateException. (str "Invalid search request: " (:id s-req) ": " (s/explain-str :tiira/search-req s-req)))))
+      ;; Update status first to avoid infinite loop if something goes wrong
+      (store/update-search-status db (:id s-req) (:searching search-status))
+      (tiira-search-and-store db s-req)
+      (store/update-search-status db (:id s-req) (:done search-status)))))
 
-(defn clean-old-items [db]
-  (let [sightings-date-limit (ct/minus (ct/now) (ct/days 7))
-        reqs-date-limit (ct/minus (ct/now) (ct/days 2))]
-    (info "Cleaning sightings older than " sightings-date-limit)
-    (store/clean-sightings db (inst-ms sightings-date-limit))
-    (info "Cleaning search requests older than " reqs-date-limit)
-    (store/clean-search-requests db (inst-ms reqs-date-limit))))
+  (defn clean-old-items [db]
+    (let [sightings-date-limit (ct/minus (ct/now) (ct/days 7))
+          reqs-date-limit (ct/minus (ct/now) (ct/days 2))]
+      (info "Cleaning sightings older than " sightings-date-limit)
+      (store/clean-sightings db (inst-ms sightings-date-limit))
+      (info "Cleaning search requests older than " reqs-date-limit)
+      (store/clean-search-requests db (inst-ms reqs-date-limit))))

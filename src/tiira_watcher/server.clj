@@ -20,7 +20,7 @@
             )
   (:gen-class)
   )
-(def ui-server-address-regex (re-pattern (:ui-server-address env "http://localhost:3000")))
+(def ui-server-address-regex (re-pattern (:ui-server-address env "http://localhost:5173")))
 
 (defn start-of-day [the-date]
   (ct/date-time (ct/year the-date) (ct/month the-date) (ct/day the-date)))
@@ -41,9 +41,16 @@
 (s/def :tiira/username string?)
 (s/def :tiira/id string?)
 (s/def :tiira/timestamp number?)
+(s/def :tiira/center-lat number?)
+(s/def :tiira/center-lon number?)
+(s/def :tiira/diag-half-km number?)
 (s/def :tiira/search-status (set (vals logic/search-status)))
-(s/def :tiira/search-req (s/keys :req-un [:tiira/area]))
-(s/def :tiira/search-req-complete (s/keys :req-un [:tiira/timestamp :tiira/area :tiira/username :tiira/search-status]))
+(s/def :tiira/search-req (s/or
+                           :area-only (s/keys :req-un [:tiira/area])
+                           :bbox      (s/keys :req-un [:tiira/center-lat :tiira/center-lon :tiira/diag-half-km])))
+(s/def :tiira/search-req-complete (s/merge
+                                   :tiira/search-req
+                                   (s/keys :req-un [:tiira/id :tiira/timestamp :tiira/username :tiira/search-status])))
 
 (defn enrich-search-request [search-request]
   {:pre [(s/valid? :tiira/search-req search-request)]
