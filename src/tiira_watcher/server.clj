@@ -96,8 +96,7 @@
       (kparams/wrap-keyword-params)
       (rparams/wrap-params)
       (rjson/wrap-json-response)
-      (rjson/wrap-json-body { :keywords? true })
-      ))
+      (rjson/wrap-json-body { :keywords? true :key-fn csk/->kebab-case-keyword })))
 
 (defn -main []
   ; Cold-start DB to avoid race conditions later
