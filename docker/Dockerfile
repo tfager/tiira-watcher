@@ -1,4 +1,4 @@
-FROM eclipse-temurin:25-jdk-alpine
+FROM eclipse-temurin:26-jdk-alpine
 
 RUN apk update && \
     apk add tzdata && \

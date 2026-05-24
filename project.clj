@@ -1,5 +1,5 @@
-(defproject tiira-watcher "1.1.2"
-  :dependencies [[org.clojure/clojure "1.12.3"]
+(defproject tiira-watcher "1.1.3"
+  :dependencies [[org.clojure/clojure "1.12.5"]
                  [clj-http "3.13.1"]
                  [clj-tagsoup "0.3.0" :exclusions [org.clojure/clojure]]
                  [lupapiste/geo-conversion "0.5.1" :exclusions [org.eclipse.emf/org.eclipse.emf.common org.eclipse.emf/org.eclipse.emf.ecore]]
@@ -10,8 +10,8 @@
                  [com.taoensso/timbre "6.8.0"]
                  [com.fzakaria/slf4j-timbre "0.4.1"]
                  [clj-time "0.15.2"]
-                 [ring/ring-core "1.15.3"]
-                 [ring/ring-jetty-adapter "1.15.3"]
+                 [ring/ring-core "1.15.4"]
+                 [ring/ring-jetty-adapter "1.15.4"]
                  [ring/ring-json "0.5.1"]
                  [ring-cors "0.1.13"]
                  [compojure "1.7.2"]
@@ -20,7 +20,7 @@
   :test-paths ["test"]
   :repl-options {:init-ns tiira-watcher.core}
   :main tiira-watcher.core
-  :plugins [[lein-environ "1.2.0"] [lein-ancient "1.0.0-RC3"] [lein-kibit "0.1.11"]]
+  :plugins [[lein-environ "1.2.0"] [lein-ancient "1.0.0"] [lein-kibit "0.1.11"]]
   :profiles {:dev {:dependencies [
                                   [se.haleby/stub-http "0.2.14"]
                                   ]
